@@ -46,8 +46,6 @@ private slots:
 private:
     void closeEvent(QCloseEvent*) override;             //창이 닫힐 때 이벤트를 처리하기 위한 재구현함수
 
-    LogThread* logThread;                               //로그를 저장하는 스레드
-
     /*채팅 클라이언트의 입력 및 출력 위젯 모음*/
     QLineEdit *name;                                    //서버에 접속할 이름 입력란
     QLineEdit *id;                                      //서버에 접속할 id 입력란
@@ -75,6 +73,7 @@ private:
     QByteArray outBlock;                                //전송을 위한 데이터
     bool isSent;                                        //파일 서버에 접속되었는지 확인
 
+    LogThread* logThread;                               //로그를 저장하는 스레드
 };
 
 #endif // CHATCLIENT_H

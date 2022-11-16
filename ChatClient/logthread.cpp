@@ -7,8 +7,8 @@
 LogThread::LogThread(QObject *parent)                                   //생성자
     : QThread{parent}
 {
-    format = QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss");  //년월일_시분 형식 저장
-    filename = QString("log_%1.txt").arg(format);                       //파일 이름을 현재 시간으로 설정
+    format = QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss");  //년월일_시분 형식의 파일 생성 시간 저장
+    filename = QString("log_%1.txt").arg(format);                       //파일 이름을 설정
 }
 
 void LogThread::run()                                                   //로그를 저장하는 함수
@@ -53,8 +53,8 @@ void LogThread::saveData()                                              //로그
         /*파일 이름을 log_id_고객성명_시간.txt로 설정 후 저장*/
         file.rename(QString("log_%1_%2_%3.txt").arg(id).arg(name).
                     arg(format));
-        filename = QString("log_%1_%2.txt").arg(name).
-                arg(format);
+        filename = QString("log_%1_%2_%3.txt").arg(id).arg(name).
+                    arg(format);
 
     }
 }
