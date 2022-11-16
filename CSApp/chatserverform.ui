@@ -68,6 +68,9 @@
               <bold>true</bold>
              </font>
             </property>
+            <property name="textAlignment">
+             <set>AlignCenter</set>
+            </property>
            </column>
            <column>
             <property name="text">
@@ -79,6 +82,9 @@
               <pointsize>11</pointsize>
               <bold>true</bold>
              </font>
+            </property>
+            <property name="textAlignment">
+             <set>AlignCenter</set>
             </property>
            </column>
           </widget>
@@ -126,6 +132,9 @@
               <bold>true</bold>
              </font>
             </property>
+            <property name="textAlignment">
+             <set>AlignCenter</set>
+            </property>
            </column>
            <column>
             <property name="text">
@@ -137,6 +146,9 @@
               <pointsize>11</pointsize>
               <bold>true</bold>
              </font>
+            </property>
+            <property name="textAlignment">
+             <set>AlignCenter</set>
             </property>
            </column>
           </widget>
@@ -200,6 +212,9 @@
             <bold>true</bold>
            </font>
           </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
+          </property>
          </column>
          <column>
           <property name="text">
@@ -211,6 +226,9 @@
             <pointsize>11</pointsize>
             <bold>true</bold>
            </font>
+          </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
           </property>
          </column>
          <column>
@@ -224,6 +242,9 @@
             <bold>true</bold>
            </font>
           </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
+          </property>
          </column>
          <column>
           <property name="text">
@@ -235,6 +256,9 @@
             <pointsize>11</pointsize>
             <bold>true</bold>
            </font>
+          </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
           </property>
          </column>
          <column>
@@ -248,6 +272,9 @@
             <bold>true</bold>
            </font>
           </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
+          </property>
          </column>
          <column>
           <property name="text">
@@ -259,6 +286,9 @@
             <pointsize>11</pointsize>
             <bold>true</bold>
            </font>
+          </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
           </property>
          </column>
         </widget>

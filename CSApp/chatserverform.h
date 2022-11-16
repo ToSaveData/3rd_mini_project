@@ -25,6 +25,7 @@ typedef enum {                                          //프로토콜을 enum�
     Chat_LogOut,                                        // 로그 아웃(서버 단절) --> 초대 불가능
     Chat_Invite,                                        // 초대
     Chat_KickOut,                                       // 강퇴
+    Chat_Close                                          //closeEvent 발생시
 } Chat_Status;
 
 class ChatServerForm : public QWidget
@@ -64,7 +65,6 @@ private:
     QTcpServer *chatServer;                             //채팅용 서버
     QTcpServer *fileServer;                             //파일 전송용 서버
     QList<QTcpSocket*> clientList;                      //로그인 한 고객의 소켓을 저장하는 배열
-    //QList<int> clientIDList;                            //고객의 ID를 저장하는 배열
     QHash<quint16, QString> clientNameHash;             //고객이 접속한 소켓의 포트번호를 key로 이름을 저장하는 해쉬
     QHash<QString, QTcpSocket*> clientSocketHash;       //고객의 이름을 key로 소켓을 저장하는 해쉬
     QHash<QString, int> clientIDHash;                   //고객의 이름을 key로 id를 저장하는 해쉬

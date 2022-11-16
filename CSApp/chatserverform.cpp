@@ -111,7 +111,7 @@ void ChatServerForm::addClientInfo(QList<int> cIdInfo, QList<QString> cNameInfo)
     }
 }
 
-void ChatServerForm::modifyClientInfo(int id, QString name)                      //고객 정보가 수정된 경우
+void ChatServerForm::modifyClientInfo(int id, QString name)                  //고객 정보가 수정된 경우
 {
     QString lastName = clientIDHash.key(id);                                 //수정 전 이름을 저장
 
@@ -246,14 +246,22 @@ void ChatServerForm::receiveData()                                           //�
     QString ip = clientConnection->peerAddress().toString();                 //소켓과 연결된 IP주소 저장
     quint16 port = clientConnection->peerPort();                             //소켓의 포트번호 저장
     QString name = QString::fromStdString(data);                             //데이터로 넘어온 이름 저장
-
+    QStringList info;
+    QString logInName;
+    QString id;
     qDebug() << ip << " : " << type;                                         //디버그 메세지 출력
 
     switch(type)                                                             //프로토콜에 따른 데이터 처리
     {
     case Chat_Login:                                                         //프로토콜이 로그인인 경우
-        if(ui->waittingRoomTreeWidget->
-                findItems(name + "  ",                                       //로그인 한 이름이 고객 목록에 없을 경우
+        info = QString::fromStdString(data).split("@");                      //넘어온 데이터를 @를 기준으로 나눔
+        logInName = info[0];                                                 //앞부분은 이름
+        id = info[1];                                                        //뒷부분은 id
+
+        if(!clientIDHash.contains(logInName) ||                              //로그인 한 id가 Hash에 없거나
+                clientIDHash[logInName] != id.toInt())    return;            //로그인 한 id가 틀렸을 경우
+
+        if(ui->waittingRoomTreeWidget->findItems(logInName + "  ",           //로그인 한 이름이 고객 목록에 없을 경우
                           Qt::MatchFixedString, 1).count() <= 0)
         {
             return;                                                          //receiveData 함수 중단(로그인 불가)
@@ -269,13 +277,13 @@ void ChatServerForm::receiveData()                                           //�
         }
 
         foreach(auto item, ui->waittingRoomTreeWidget->                      //대기실에서 로그아웃 상태인 이름 찾기
-                findItems(name + "  ", Qt::MatchFixedString, 1)) {
-            if(item->text(1) != name + " ")                                  //로그아웃 상태(공백 2개)이면
+                findItems(logInName + "  ", Qt::MatchFixedString, 1)) {
+            if(item->text(1) != logInName + " ")                             //로그아웃 상태(공백 2개)이면
             {
                 item->setIcon(0, QIcon(":/icon_image/greenLight.png"));      //로그인 아이콘 설정
-                item->setText(1, name + " ");                                //로그인 상태 설정(공백 1개)
+                item->setText(1, logInName + " ");                           //로그인 상태 설정(공백 1개)
                 clientList.append(clientConnection);                         //로그인한 고객의 소켓을 리스트에 저장
-                clientSocketHash[name] = clientConnection;                   //이름을 key로 소켓을 해쉬에 저장
+                clientSocketHash[logInName] = clientConnection;              //이름을 key로 소켓을 해쉬에 저장
             }
         }
         break;
@@ -368,6 +376,24 @@ void ChatServerForm::receiveData()                                           //�
                 clientList.removeOne(clientConnection);                      //로그인 시 추가했던 리스트에서 제거
                 clientSocketHash.take(name);                                 //로그인 시 추가했던 해쉬에서 제거
             }
+        }
+        break;
+    case Chat_Close:                                                        //프로토콜이 closeEvent인 경우
+        foreach(auto item, ui->chattingRoomTreeWidget->                     //클라이언트의 이름이 채팅방에 있는 경우
+                findItems(name, Qt::MatchFixedString, 1))
+        {
+            int index = ui->chattingRoomTreeWidget->                        //현재 아이템의 인덱스 저장
+                    indexOfTopLevelItem(item);
+            item->setIcon(0, QIcon(":/icon_image/redLight.png"));           //로그아웃 상태 아이콘 설정
+            item->setText(1, name + "  ");                                  //로그아웃 상태 설정(공백 2개)
+            ui->chattingRoomTreeWidget->takeTopLevelItem(index);            //채팅방 목록에서 제거
+            ui->waittingRoomTreeWidget->addTopLevelItem(item);              //대기실 목록에 추가
+        }
+        foreach(auto item, ui->waittingRoomTreeWidget->                     //클라이언트의 이름이 대기실에 있는 경우
+                findItems(name + " ", Qt::MatchFixedString, 1))
+        {
+            item->setIcon(0, QIcon(":/icon_image/redLight.png"));           //로그아웃 상태 아이콘 설정
+            item->setText(1, name + "  ");                                  //로그아웃 상태 설정(공백 2개)
         }
         break;
     }

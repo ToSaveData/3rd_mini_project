@@ -607,13 +607,13 @@
         <location filename="orderhandlerform.ui" line="79"/>
         <location filename="orderhandlerform.ui" line="574"/>
         <source>tr(&quot;order date&quot;)</source>
-        <translation>주문일자</translation>
+        <translation>주문 일자</translation>
     </message>
     <message>
         <location filename="orderhandlerform.ui" line="99"/>
         <location filename="orderhandlerform.ui" line="591"/>
         <source>tr(&quot;order quantity&quot;)</source>
-        <translation>주문수량</translation>
+        <translation>주문 수량</translation>
     </message>
     <message>
         <location filename="orderhandlerform.ui" line="119"/>
@@ -750,14 +750,14 @@
         <location filename="orderhandlerform.cpp" line="68"/>
         <location filename="orderhandlerform.cpp" line="88"/>
         <source>order_date</source>
-        <translation>주문일자</translation>
+        <translation>주문 일자</translation>
     </message>
     <message>
         <location filename="orderhandlerform.cpp" line="61"/>
         <location filename="orderhandlerform.cpp" line="82"/>
         <location filename="orderhandlerform.cpp" line="102"/>
         <source>order_quantity</source>
-        <translation>주문수량</translation>
+        <translation>주문 수량</translation>
     </message>
     <message>
         <location filename="orderhandlerform.cpp" line="62"/>

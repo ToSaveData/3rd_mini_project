@@ -74,10 +74,10 @@ CS_App::CS_App(QWidget *parent)
             OForm, SLOT(modifyReturnProduct(QList<QString>, int)));
 
     /*고객, 제품 정보 클래스에서 정보가 삭제됐다는 시그널을 주문 정보 클래스의 슬롯에 연결*/
-    connect(CForm, SIGNAL(clientRemoved(int, QString, QString)),
-            OForm, SLOT(clientRemoved(int, QString, QString)));
-    connect(PForm, SIGNAL(productRemoved(int, QString, QString)),
-            OForm, SLOT(productRemoved(int, QString, QString)));
+    connect(CForm, SIGNAL(clientRemoved(int)),
+            OForm, SLOT(clientRemoved(int)));
+    connect(PForm, SIGNAL(productRemoved(int)),
+            OForm, SLOT(productRemoved(int)));
 
     /*고객, 제품 정보 클래스에서 정보가 수정됐다는 시그널을 주문 정보 클래스의 슬롯에 연결*/
     connect(CForm, SIGNAL(clientModified(int,QList<QString>)),
