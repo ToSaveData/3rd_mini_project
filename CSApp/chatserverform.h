@@ -55,8 +55,6 @@ private slots:
     void on_waittingRoomTreeWidget_customContextMenuRequested(const QPoint &pos);
     void on_chattingRoomTreeWidget_customContextMenuRequested(const QPoint &pos);
 
-    void on_resetPushButton_clicked();                  //고객 목록을 다시 불러오는 함수
-
 private:
     const int BLOCK_SIZE = 1024;                        //한 번에 보낼 바이트의 크기를 1024로 고정
     const int PORT_NUMBER = 8000;                       //서버의 포트번호를 8000으로 고정

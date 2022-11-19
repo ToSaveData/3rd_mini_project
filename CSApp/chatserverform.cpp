@@ -601,9 +601,3 @@ void ChatServerForm::on_chattingRoomTreeWidget_customContextMenuRequested(const 
     menu->exec(globalPos);                                                   //컨텍스트 메뉴 출력
 
 }
-
-void ChatServerForm::on_resetPushButton_clicked()                            //reset 버튼이 클릭될 경우
-{
-    ui->waittingRoomTreeWidget->clear();                                     //대기실 목록을 비움
-    emit reset();                                                            //reset 시그널 방출
-}
