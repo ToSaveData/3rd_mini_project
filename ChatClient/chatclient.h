@@ -6,6 +6,8 @@
 #include <QDataStream>
 
 class QTextEdit;
+class QHBoxLayout;
+class QVBoxLayout;
 class QLineEdit;
 class QTcpSocket;
 class QPushButton;
@@ -46,6 +48,10 @@ private slots:
 private:
     void closeEvent(QCloseEvent*) override;             //창이 닫힐 때 이벤트를 처리하기 위한 재구현함수
 
+    QHBoxLayout *serverLayout;
+    QHBoxLayout *inputLayout;
+    QHBoxLayout *buttonLayout;
+    QVBoxLayout *mainLayout;
     /*채팅 클라이언트의 입력 및 출력 위젯 모음*/
     QLineEdit *name;                                    //서버에 접속할 이름 입력란
     QLineEdit *id;                                      //서버에 접속할 id 입력란

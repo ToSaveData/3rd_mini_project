@@ -23,12 +23,12 @@ void LogThread::run()                                                   //로그
 
 void LogThread::appendData(QTreeWidgetItem* item)                       //저장할 로그를 배열에 추가하는 함수
 {
-    itemList.append(item);                                              //배열에 아이템을 저장
+    itemList.push_back(item);                                              //배열에 아이템을 저장
 }
 
 void LogThread::saveData()                                              //로그를 파일로 출력하는 함수
 {
-    if(itemList.count() > 0)                                            //저장할 로그가 있으면
+    if(itemList.size() > 0)                                            //저장할 로그가 있으면
     {
         QFile file(filename);                                           //파일 생성
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text))         //파일 열기 예외처리

@@ -6,13 +6,13 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QApplication app(argc, argv);
 
-    QTranslator translator;
-    translator.load("ChatClient_ko");
-    a.installTranslator(&translator);
+    QTranslator tr;
+    tr.load("ChatClient_ko");
+    app.installTranslator(&tr);
 
     ChatClient w;
     w.show();
-    return a.exec();
+    return app.exec();
 }

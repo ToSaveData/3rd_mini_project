@@ -59,18 +59,18 @@ private slots:
     void on_enrollPushButton_clicked();                             //등록 버튼을 눌렀을 때
 
     /*주문 정보를 추가할 때, 고객 정보 클래스에서 돌아온 시그널을 받는 슬롯함수*/
-    void addReturnClient(QList<QString>);
+    void addReturnClient(std::vector<QString>);
 
     /*주문 정보를 추가할 때, 제품 정보 클래스에서 돌아온 시그널을 받는 슬롯함수*/
-    void addReturnProduct(QList<QString>);
+    void addReturnProduct(std::vector<QString>);
 
     void on_searchPushButton_clicked();                             //검색 버튼을 눌렀을 때
 
     /*주문 정보를 검색할 때, 고객 정보 클래스에서 돌아온 시그널을 받는 슬롯함수*/
-    void searchReturnClient(QList<QString>);
+    void searchReturnClient(std::vector<QString>);
 
     /*주문 정보를 검색할 때, 제품 정보 클래스에서 돌아온 시그널을 받는 슬롯함수*/
-    void searchReturnProduct(QList<QString>);
+    void searchReturnProduct(std::vector<QString>);
 
     void on_resetPushButton_clicked();                              //초기화 버튼을 눌렀을 때
 
@@ -79,10 +79,10 @@ private slots:
     void on_modifyPushButton_clicked();                             //수정 버튼을 눌렀을 때
 
     /*주문 정보를 수정할 때, 고객 정보 클래스에서 돌아온 시그널을 받는 슬롯함수*/
-    void modifyReturnClient(QList<QString>, int);
+    void modifyReturnClient(std::vector<QString>, int);
 
     /*주문 정보를 수정할 때, 제품 정보 클래스에서 돌아온 시그널을 받는 슬롯함수*/
-    void modifyReturnProduct(QList<QString>, int);
+    void modifyReturnProduct(std::vector<QString>, int);
 
     /*수정 시 선택된 데이터를 LineEdit 위젯에 미리 채우기 위한 슬롯함수*/
     void on_tableView5_clicked(const QModelIndex &index);
@@ -100,10 +100,10 @@ private slots:
     void productRemoved(int);
 
     /*고객 정보가 수정됐다는 시그널을 받는 슬롯함수*/
-    void clientModified(int, QList<QString>);
+    void clientModified(int, std::vector<QString>);
 
     /*제품 정보가 수정됐다는 시그널을 받는 슬롯함수*/
-    void productModified(int, QList<QString>);
+    void productModified(int, std::vector<QString>);
 };
 
 #endif // ORDERHANDLERFORM_H

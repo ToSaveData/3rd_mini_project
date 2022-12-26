@@ -13,6 +13,7 @@
 #include <QDebug>
 #include <QMenu>
 #include <QFile>
+#include <QList>
 #include <QFileInfo>
 #include <QProgressDialog>
 #include <QIcon>
@@ -25,13 +26,14 @@ ChatServerForm::ChatServerForm(QWidget *parent) :                           //�
 
     /*현재 UI의 스플리터 사이즈를 설정*/
     QList<int> sizes;
-    sizes << 120 << 500;
+    sizes.push_back(120);
+    sizes.push_back(500);
     ui->splitter->setSizes(sizes);
 
     chatServer = new QTcpServer(this);                                      //채팅 서버에 QTcp 서버 객체 생성
 
     /*채팅 서버에 새로운 클라이언트가 연결되면 clientConnect 함수 실행*/
-    connect(chatServer, SIGNAL(newConnection()), SLOT(clientConnect()));
+    assert(connect(chatServer, SIGNAL(newConnection()), SLOT(clientConnect())));
 
     if (!chatServer->listen(QHostAddress::Any, PORT_NUMBER))                //클라이언트 소켓이 연결이 안 되면
     {
@@ -44,7 +46,7 @@ ChatServerForm::ChatServerForm(QWidget *parent) :                           //�
     fileServer = new QTcpServer(this);                                      //파일 서버에 QTcp 서버 객체 생성
 
     /*파일 서버에 새로운 클라이언트가 연결되면 acceptConnection 함수 실행*/
-    connect(fileServer, SIGNAL(newConnection()), SLOT(acceptConnection()));
+    assert(connect(fileServer, SIGNAL(newConnection()), SLOT(acceptConnection())));
 
     if (!fileServer->listen(QHostAddress::Any, PORT_NUMBER+1))              //클라이언트 소켓이 연결이 안 되면
     {
@@ -59,12 +61,12 @@ ChatServerForm::ChatServerForm(QWidget *parent) :                           //�
     /*액션 생성, 객체명 지정, 신호 연결*/
     QAction* inviteAction = new QAction(tr("&Invite"));
     inviteAction->setObjectName("Invite");
-    connect(inviteAction, SIGNAL(triggered()), SLOT(inviteClient()));
+    assert(connect(inviteAction, SIGNAL(triggered()), SLOT(inviteClient())));
 
     /*액션 생성, 객체명 지정, 신호 연결*/
     QAction* removeAction = new QAction(tr("&Kick out"));
     removeAction->setObjectName("Kick out");
-    connect(removeAction, SIGNAL(triggered()), SLOT(kickOut()));
+    assert(connect(removeAction, SIGNAL(triggered()), SLOT(kickOut())));
 
     /*컨텍스트 메뉴 객체 생성 및 액션 추가*/
     menu = new QMenu;
@@ -81,8 +83,8 @@ ChatServerForm::ChatServerForm(QWidget *parent) :                           //�
     logThread = new LogThread(this);                                        //스레드 객체 생성
     logThread->start();                                                     //스레드 실행
 
-    connect(ui->savePushButton, SIGNAL(clicked()),                          //saveButton을 누르면 로그 저장
-            logThread, SLOT(saveData()));
+    assert(connect(ui->savePushButton, SIGNAL(clicked()),                          //saveButton을 누르면 로그 저장
+            logThread, SLOT(saveData())));
 
     qDebug() << tr("The server is running on port %1.")                     //디버그 메세지 출력
                 .arg(chatServer->serverPort());
@@ -91,13 +93,27 @@ ChatServerForm::ChatServerForm(QWidget *parent) :                           //�
 ChatServerForm::~ChatServerForm()                                           //소멸자
 {
     delete ui;                                                              //생성자에서 만든 포인터 객체 소멸
+    delete progressDialog;
+    delete this->menu;
 
     logThread->terminate();                                                 //스레드 소멸
+    logThread->deleteLater();
+
     chatServer->close();                                                    //채팅 서버 객체 소멸
+    chatServer->deleteLater();
+
     fileServer->close();                                                    //파일 서버 객체 소멸
+    fileServer->deleteLater();
+
+    ui = nullptr;
+    progressDialog = nullptr;
+    this->menu = nullptr;
+    logThread = nullptr;
+    chatServer = nullptr;
+    fileServer = nullptr;
 }
 
-void ChatServerForm::addClientInfo(QList<int> cIdInfo, QList<QString> cNameInfo) //고객 정보를 서버에 추가하는 함수
+void ChatServerForm::addClientInfo(std::vector<int> cIdInfo, std::vector<QString> cNameInfo) //고객 정보를 서버에 추가하는 함수
 {
     int cnt = 0;                                                             //고객 성명 배열의 순서를 기억하기 위한 임시 변수
     Q_FOREACH(auto i, cNameInfo)                                             //고객 성명이 저장된 수만큼 반복
@@ -113,10 +129,17 @@ void ChatServerForm::addClientInfo(QList<int> cIdInfo, QList<QString> cNameInfo)
 
 void ChatServerForm::modifyClientInfo(int id, QString name)                  //고객 정보가 수정된 경우
 {
-    QString lastName = clientIDHash.key(id);                                 //수정 전 이름을 저장
+    QString key;
+    for(const auto& e : clientIDHash){
+        if(id==e.second){
+            key = e.first;
+            break;
+        }
+    }
+    QString lastName = key;//clientIDHash.key(id);                                 //수정 전 이름을 저장
 
     /*수정 전 이름을 가진 클라이언트가 접속중이라면 kick out 프로토콜을 보내 재접속 유도*/
-    if(clientSocketHash.contains(lastName))
+    if(clientSocketHash.find(lastName) != clientSocketHash.end())
     {
         QTcpSocket* sock = clientSocketHash[lastName];
         QByteArray sendArray;
@@ -127,7 +150,7 @@ void ChatServerForm::modifyClientInfo(int id, QString name)                  //�
     }
 
     clientIDHash[name] = id;                                                 //수정된 이름을 key로 id 저장
-    clientIDHash.remove(lastName);                                           //이전 이름을 key로 하는 정보 삭제
+    clientIDHash.erase(lastName);                                           //이전 이름을 key로 하는 정보 삭제
 
     Q_FOREACH(auto item, ui->chattingRoomTreeWidget->                        //이전 이름이 채팅방에 있는 경우
               findItems(lastName, Qt::MatchFixedString, 1))
@@ -171,6 +194,20 @@ void ChatServerForm::modifyClientInfo(int id, QString name)                  //�
 void ChatServerForm::removeClientInfo(QString name)                              //고객 정보가 삭제된 경우
 {
     /*삭제된 이름을 가진 클라이언트가 접속중이라면 kick out 프로토콜을 보내 프로그램 종료를 유도*/
+#if 1
+    for(const auto& e : clientIDHash){
+        if(name==e.first){
+            QTcpSocket* sock = clientSocketHash[name];
+
+            QByteArray sendArray;
+            QDataStream out(&sendArray, QIODevice::WriteOnly);
+            out << Chat_KickOut;
+            out.writeRawData("", 1020);
+            sock->write(sendArray);
+            break;
+        }
+    }
+#else
     if(clientSocketHash.contains(name))
     {
         QTcpSocket* sock = clientSocketHash[name];
@@ -181,8 +218,9 @@ void ChatServerForm::removeClientInfo(QString name)                             
         out.writeRawData("", 1020);
         sock->write(sendArray);
     }
+#endif
 
-    clientIDHash.remove(name);                                               //삭제된 이름을 key로 하는 정보 삭제
+    clientIDHash.erase(name);                                               //삭제된 이름을 key로 하는 정보 삭제
 
     Q_FOREACH(auto item, ui->chattingRoomTreeWidget->                        //삭제된 이름이 채팅방에 있는 경우
               findItems(name, Qt::MatchFixedString, 1))
@@ -220,10 +258,10 @@ void ChatServerForm::clientConnect()                                         //�
     QTcpSocket *clientConnection = chatServer->nextPendingConnection();      //연결된 클라이언트 소켓과 채팅 서버를 연결
 
     /*소켓이 read할 준비가 되면 receiveData 함수를 연결*/
-    connect(clientConnection, SIGNAL(readyRead()), SLOT(receiveData()));
+    assert(connect(clientConnection, SIGNAL(readyRead()), SLOT(receiveData())));
 
     /*소켓의 연결이 끊어지면 removeClient 함수를 연결*/
-    connect(clientConnection, SIGNAL(disconnected()), SLOT(removeClient()));
+    assert(connect(clientConnection, SIGNAL(disconnected()), SLOT(removeClient())));
 
     qDebug() << tr("new connection is established...");                      //디버그 메세지 출력
 }
@@ -257,10 +295,16 @@ void ChatServerForm::receiveData()                                           //�
         info = QString::fromStdString(data).split("@");                      //넘어온 데이터를 @를 기준으로 나눔
         logInName = info[0];                                                 //앞부분은 이름
         id = info[1];                                                        //뒷부분은 id
-
+#if 1
+        for(const auto& e : clientIDHash){
+            if(!(e.first == logInName) || !(clientIDHash[logInName] == e.second)){
+                return;
+                }
+            }
+#else
         if(!clientIDHash.contains(logInName) ||                              //로그인 한 id가 Hash에 없거나
                 clientIDHash[logInName] != id.toInt())    return;            //로그인 한 id가 틀렸을 경우
-
+#endif
         if(ui->waittingRoomTreeWidget->findItems(logInName + "  ",           //로그인 한 이름이 고객 목록에 없을 경우
                           Qt::MatchFixedString, 1).count() <= 0)
         {
@@ -282,7 +326,7 @@ void ChatServerForm::receiveData()                                           //�
             {
                 item->setIcon(0, QIcon(":/icon_image/greenLight.png"));      //로그인 아이콘 설정
                 item->setText(1, logInName + " ");                           //로그인 상태 설정(공백 1개)
-                clientList.append(clientConnection);                         //로그인한 고객의 소켓을 리스트에 저장
+                clientList.push_back(clientConnection);                         //로그인한 고객의 소켓을 리스트에 저장
                 clientSocketHash[logInName] = clientConnection;              //이름을 key로 소켓을 해쉬에 저장
             }
         }
@@ -311,6 +355,23 @@ void ChatServerForm::receiveData()                                           //�
     {
         foreach(QTcpSocket *sock, clientList)                                //접속한 클라이언트 수만큼 반복
         {
+#if 1
+            for(const auto& e : clientIDHash){
+                if(e.second == sock->peerPort() && sock != clientConnection){
+                    QByteArray sendArray;
+                    sendArray.clear();                                           //바이트 어레이 초기화
+                    QDataStream out(&sendArray, QIODevice::WriteOnly);
+                    out << Chat_Talk;                                            //채팅보내기 프로토콜 삽입
+                    sendArray.append("<font color=lightsteelblue>");             //옅은 파란색으로
+                    sendArray.append(clientNameHash[port].toStdString().data()); //이름
+                    sendArray.append("</font> : ");                              //폰트 종료, : 출력
+                    sendArray.append(name.toStdString().data());                 //메세지 추가
+                    sock->write(sendArray);                                      //모든 데이터 write
+                    qDebug() << sock->peerPort();                                //디버그 메세지 출력
+                    break;
+                }
+            }
+#else
             if(clientNameHash.contains(sock->peerPort())                     //자신을 제외한 채팅방에 있는 모든 소켓에게
                     && sock != clientConnection)
             {
@@ -326,6 +387,7 @@ void ChatServerForm::receiveData()                                           //�
                 sock->write(sendArray);                                      //모든 데이터 write
                 qDebug() << sock->peerPort();                                //디버그 메세지 출력
             }
+#endif
         }
 
         /*로그를 기록*/
@@ -356,7 +418,7 @@ void ChatServerForm::receiveData()                                           //�
                 item->setIcon(0, QIcon(":/icon_image/greenLight.png"));      //로그인 상태 아이콘 설정
                 item->setText(1, name + " ");                                //로그인 상태 설정(공백 1개)
             }
-            clientNameHash.remove(port);                                     //채팅방 입장시 추가했던 해쉬에서 제거
+            clientNameHash.erase(port);                                     //채팅방 입장시 추가했던 해쉬에서 제거
 
             /*채팅방 목록에서 제거 후 대기실 목록에 추가*/
             int index = ui->chattingRoomTreeWidget->
@@ -373,8 +435,17 @@ void ChatServerForm::receiveData()                                           //�
             {
                 item->setIcon(0, QIcon(":/icon_image/redLight.png"));        //로그아웃 상태 아이콘 설정
                 item->setText(1, name + "  ");                               //로그아웃 상태 설정(공백 2개)
-                clientList.removeOne(clientConnection);                      //로그인 시 추가했던 리스트에서 제거
-                clientSocketHash.take(name);                                 //로그인 시 추가했던 해쉬에서 제거
+                for(std::vector<QTcpSocket*>::iterator e = clientList.begin(); e != clientList.end(); ++e){
+                    if(*e == clientConnection){
+                        clientList.erase(e);
+//                        e = clientList.begin();
+                        break;
+                    }
+                }
+//                clientList.removeOne(clientConnection);                      //로그인 시 추가했던 리스트에서 제거
+                clientConnection->deleteLater();
+                clientConnection = nullptr;
+                clientSocketHash.erase(name);                                 //로그인 시 추가했던 해쉬에서 제거
             }
         }
         break;
@@ -420,8 +491,16 @@ void ChatServerForm::removeClient()                                          //�
         item->setText(1, name + "  ");                                       //로그아웃 상태 설정(공백 2개)
     }
 
-    clientList.removeOne(clientConnection);                                  //로그인 시 추가했던 리스트에서 제거
+    for(std::vector<QTcpSocket*>::iterator e = clientList.begin(); e != clientList.end(); ++e){
+        if(*e == clientConnection){
+            clientList.erase(e);
+//            e = clientList.begin();
+            break;
+        }
+    }
+//    clientList.removeOne(clientConnection);                                  //로그인 시 추가했던 리스트에서 제거
     clientConnection->deleteLater();                                         //소켓을 삭제할 수 있을 때 삭제
+    clientConnection = nullptr;
 }
 
 void ChatServerForm::kickOut()                                               //클라이언트에게 강퇴 프로토콜을 보내는 함수
@@ -494,7 +573,7 @@ void ChatServerForm::acceptConnection()                                      //�
     QTcpSocket* receivedSocket = fileServer->nextPendingConnection();        //연결된 클라이언트 소켓과 파일 서버를 연결
 
     /*소켓이 read할 준비가 되면 readClient 함수를 연결*/
-    connect(receivedSocket, SIGNAL(readyRead()), this, SLOT(readClient()));
+    assert(connect(receivedSocket, SIGNAL(readyRead()), this, SLOT(readClient())));
 }
 
 void ChatServerForm::readClient()                                            //클라이언트가 보내는 파일을 read하는 함수
@@ -564,6 +643,7 @@ void ChatServerForm::readClient()                                            //�
         progressDialog->hide();                                              //progressDialog 숨김
         file->close();                                                       //파일 닫기
         delete file;                                                         //파일 객체 삭제
+        file = nullptr;
     }
 }
 

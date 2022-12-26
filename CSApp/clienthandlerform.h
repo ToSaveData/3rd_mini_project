@@ -24,7 +24,7 @@ public slots:
 
 signals:
     /*파일 입력 시 고객 정보를 서버에 전달하기 위한 시그널*/
-    void clientLoad(QList<int>, QList<QString>);
+    void clientLoad(std::vector<int>, std::vector<QString>);
 
     /*고객 정보가 추가됐음을 주문 정보 클래스에 전달하는 시그널*/
     void clientAdded(int);
@@ -33,19 +33,19 @@ signals:
     void clientRemoved(int);
 
     /*고객 정보가 수정됐음을 주문 정보 클래스에 전달하는 시그널*/
-    void clientModified(int, QList<QString>);
+    void clientModified(int, std::vector<QString>);
 
     /*주문 정보 등록 시 요청한 고객 정보를 인자로 담아 반환하는 시그널*/
-    void addReturn(QList<QString>);
+    void addReturn(std::vector<QString>);
 
     /*주문 정보 검색 시 요청한 고객 정보를 인자로 담아 반환하는 시그널*/
-    void searchReturn(QList<QString>);
+    void searchReturn(std::vector<QString>);
 
     /*주문 정보 수정 시 요청한 고객 정보를 인자로 담아 반환하는 시그널*/
-    void modifyReturn(QList<QString>, int);
+    void modifyReturn(std::vector<QString>, int);
 
     /*새로 등록된 고객 정보를 서버에 전달하는 시그널*/
-    void sendServer(QList<int>, QList<QString>);
+    void sendServer(std::vector<int>, std::vector<QString>);
 
     /*삭제된 고객 정보를 서버에 전달하는 시그널*/
     void sendServerCRemoved(QString);

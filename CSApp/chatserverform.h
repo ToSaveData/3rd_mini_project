@@ -2,8 +2,8 @@
 #define CHATSERVERFORM_H
 
 #include <QWidget>
-#include <QList>
 #include <QHash>
+#include <vector>
 
 class QLabel;
 class QTcpServer;
@@ -45,7 +45,7 @@ private slots:
     void clientConnect();                               //서버와 클라이언트 소켓을 연결하는 함수
     void receiveData();                                 //클라이언트의 프로토콜을 받고 처리하는 함수
     void removeClient();                                //서버와의 연결이 끊어질 경우 소켓 목록에서 삭제하는 함수
-    void addClientInfo(QList<int>, QList<QString>);     //고객 정보를 추가하는 함수
+    void addClientInfo(std::vector<int>, std::vector<QString>);     //고객 정보를 추가하는 함수
     void modifyClientInfo(int, QString);                //고객 정보를 수정하는 함수
     void removeClientInfo(QString);                     //고객 정보를 삭제하는 함수
     void inviteClient();                                //클라이언트에게 초대 프로토콜을 보내는 함수
@@ -62,10 +62,10 @@ private:
     Ui::ChatServerForm *ui;                             //UI
     QTcpServer *chatServer;                             //채팅용 서버
     QTcpServer *fileServer;                             //파일 전송용 서버
-    QList<QTcpSocket*> clientList;                      //로그인 한 고객의 소켓을 저장하는 배열
-    QHash<quint16, QString> clientNameHash;             //고객이 접속한 소켓의 포트번호를 key로 이름을 저장하는 해쉬
-    QHash<QString, QTcpSocket*> clientSocketHash;       //고객의 이름을 key로 소켓을 저장하는 해쉬
-    QHash<QString, int> clientIDHash;                   //고객의 이름을 key로 id를 저장하는 해쉬
+    std::vector<QTcpSocket*> clientList;                      //로그인 한 고객의 소켓을 저장하는 배열
+    std::unordered_map<quint16, QString> clientNameHash;             //고객이 접속한 소켓의 포트번호를 key로 이름을 저장하는 해쉬
+    std::unordered_map<QString, QTcpSocket*> clientSocketHash;       //고객의 이름을 key로 소켓을 저장하는 해쉬
+    std::unordered_map<QString, int> clientIDHash;                   //고객의 이름을 key로 id를 저장하는 해쉬
     QMenu* menu;                                        //컨텍스트 메뉴를 만들기 위한 메뉴 객체
     QFile* file;                                        //파일 전송을 위한 file 객체
     QProgressDialog* progressDialog;                    //진행률을 나타내는 progressDialog

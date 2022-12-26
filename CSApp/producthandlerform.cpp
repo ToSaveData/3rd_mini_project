@@ -1,6 +1,6 @@
 #include "producthandlerform.h"
 #include "ui_producthandlerform.h"
-#include <QList>
+//#include <std::vector>
 #include <QComboBox>
 #include <QTableView>
 #include <QSqlTableModel>
@@ -70,6 +70,11 @@ ProductHandlerForm::~ProductHandlerForm()                           //소멸자
     delete tableModel;
     delete searchModel;
     delete Pui;
+
+    query = nullptr;
+    tableModel = nullptr;
+    searchModel = nullptr;
+    Pui = nullptr;
 }
 
 int ProductHandlerForm::makePid()                                   //제품 ID를 생성하는 함수
@@ -219,8 +224,12 @@ void ProductHandlerForm::on_modifyPushButton_clicked()              //수정 버
 
     tableModel->select();                                           //테이블 뷰의 정보 최신화
 
-    QList<QString> pinfo;                                           //주문 정보 클래스에 보낼 제품 정보 배열
-    pinfo << sort << name << QString::number(price);                //제품 정보를 담음
+    std::vector<QString> pinfo;                                           //주문 정보 클래스에 보낼 제품 정보 배열
+
+    /*제품 정보를 담음*/
+    pinfo.push_back(sort);
+    pinfo.push_back(name);
+    pinfo.push_back(QString::number(price));
 
     /*주문 정보 클래스에 제품 정보가 수정됐다는 시그널 방출*/
     emit productModified(pid, pinfo);
@@ -257,7 +266,7 @@ void ProductHandlerForm::on_tableView5_clicked(const QModelIndex &index)
 /*새로운 주문 정보를 등록할 경우 제품 정보를 담아서 보내주는 슬롯함수*/
 void ProductHandlerForm::orderAddedProduct(int pid)
 {
-    QList<QString> pinfo;                                           //제품 정보를 담을 배열
+    std::vector<QString> pinfo;                                           //제품 정보를 담을 배열
 
     /*주문 정보 클래스에 보내줄 제품 정보만 가져오는 쿼리문*/
     query->prepare("SELECT sort, name, price "
@@ -278,14 +287,17 @@ void ProductHandlerForm::orderAddedProduct(int pid)
     QString name = query->value(nameColIdx).toString();
     int price = query->value(priceColIdx).toInt();
 
-    pinfo << sort << name << QString::number(price);
+    pinfo.push_back(sort);
+    pinfo.push_back(name);
+    pinfo.push_back(QString::number(price));
+
     emit addReturn(pinfo);                                          //담은 제품 정보를 시그널로 방출
 }
 
 /*주문 정보 클래스에서 검색할 경우 필요한 제품 정보를 담아서 보내주는 슬롯함수*/
 void ProductHandlerForm::orderSearchedProduct(int pid)
 {
-    QList<QString> pinfo;                                           //제품 정보를 담을 배열
+    std::vector<QString> pinfo;                                           //제품 정보를 담을 배열
 
     /*주문 정보 클래스에 보내줄 제품 정보만 가져오는 쿼리문*/
     query->prepare("SELECT sort, name, price "
@@ -306,7 +318,9 @@ void ProductHandlerForm::orderSearchedProduct(int pid)
     QString name = query->value(nameColIdx).toString();
     int price = query->value(priceColIdx).toInt();
 
-    pinfo << sort << name << QString::number(price);
+    pinfo.push_back(sort);
+    pinfo.push_back(name);
+    pinfo.push_back(QString::number(price));
 
     emit searchReturn(pinfo);                                       //담은 제품 정보를 시그널로 방출
 }
@@ -314,7 +328,7 @@ void ProductHandlerForm::orderSearchedProduct(int pid)
 /*주문 정보 클래스에서 주문 정보를 수정할 경우 필요한 제품 정보를 담아서 보내주는 슬롯함수*/
 void ProductHandlerForm::orderModifiedProduct(int pid, int row)
 {
-    QList<QString> pinfo;                                           //제품 정보를 담을 배열
+    std::vector<QString> pinfo;                                           //제품 정보를 담을 배열
 
     /*주문 정보 클래스에 보내줄 제품 정보만 가져오는 쿼리문*/
     query->prepare("SELECT sort, name, price "
@@ -335,7 +349,9 @@ void ProductHandlerForm::orderModifiedProduct(int pid, int row)
     QString name = query->value(nameColIdx).toString();
     int price = query->value(priceColIdx).toInt();
 
-    pinfo << sort << name << QString::number(price);
+    pinfo.push_back(sort);
+    pinfo.push_back(name);
+    pinfo.push_back(QString::number(price));
 
     emit modifyReturn(pinfo, row);                                  //담은 제품 정보를 시그널로 방출
 }

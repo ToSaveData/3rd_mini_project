@@ -1,6 +1,6 @@
 #include "clienthandlerform.h"
 #include "ui_clienthandlerform.h"
-#include <QList>
+//#include <std::vector>
 #include <QComboBox>
 #include <QTableView>
 #include <QSqlTableModel>
@@ -82,14 +82,19 @@ ClientHandlerForm::~ClientHandlerForm()                         //소멸자
     delete tableModel;
     delete searchModel;
     delete Cui;
+
+    query = nullptr;
+    tableModel = nullptr;
+    searchModel = nullptr;
+    Cui = nullptr;
 }
 
 /*서버 클래스의 파일 입력에 필요한 정보를 담기 위한 슬롯 함수*/
 void ClientHandlerForm::dataLoad()
 {
     /*서버 클래스에 고객의 이름과 ID를 담아 전송할 배열*/
-    QList<QString> cNameList;
-    QList<int> cIdList;
+    std::vector<QString> cNameList;
+    std::vector<int> cIdList;
 
     /*고객의 이름과 ID를 저장할 변수 선언*/
     QString name;
@@ -101,8 +106,8 @@ void ClientHandlerForm::dataLoad()
         id = tableModel->record(i).value("c_id").toInt();
         name = tableModel->record(i).value("name").toString();
 
-        cIdList << id;
-        cNameList << name;
+        cIdList.push_back(id);
+        cNameList.push_back(name);
     }
 
     emit clientLoad(cIdList, cNameList);                        //서버 클래스의 고객 목록 입력에 필요한 시그널 방출
@@ -134,7 +139,7 @@ void ClientHandlerForm::on_enrollPushButton_clicked()           //등록 버튼�
             return;
     }
 
-    QList<int> cIdInfo;                                         //서버 클래스에 보낼 고객 ID를 담을 배열
+    std::vector<int> cIdInfo;                                         //서버 클래스에 보낼 고객 ID를 담을 배열
 
     /*입력된 데이터 저장*/
     int cid = makeCid();
@@ -162,7 +167,7 @@ void ClientHandlerForm::on_enrollPushButton_clicked()           //등록 버튼�
         /*주문 정보 클래스에 새 고객 정보가 추가 됐다는 시그널 방출*/
         emit clientAdded(cid);
 
-        cIdInfo << cid;                                         //서버 클래스에 보낼 고객 ID를 저장
+        cIdInfo.push_back(cid);                                         //서버 클래스에 보낼 고객 ID를 저장
     }
     else                                                        //두 번째부터 데이터가 입력될 경우
     {
@@ -185,11 +190,11 @@ void ClientHandlerForm::on_enrollPushButton_clicked()           //등록 버튼�
         /*주문 정보 클래스에 새 고객 정보가 추가 됐다는 시그널 방출*/
         emit clientAdded(id);
 
-        cIdInfo << id;                                          //서버 클래스에 보낼 고객 ID를 저장
+        cIdInfo.push_back(id);                                          //서버 클래스에 보낼 고객 ID를 저장
     }
 
-    QList<QString> cNameInfo;                                   //서버 클래스에 보낼 고객 성명을 담을 배열
-    cNameInfo << lineEdit[0]->text();                           //고객 성명을 저장
+    std::vector<QString> cNameInfo;                                   //서버 클래스에 보낼 고객 성명을 담을 배열
+    cNameInfo.push_back(lineEdit[0]->text());                           //고객 성명을 저장
 
     emit sendServer(cIdInfo, cNameInfo);                        //서버 클래스에 저장할 고객 정보 시그널 방출
 
@@ -288,8 +293,10 @@ void ClientHandlerForm::on_modifyPushButton_clicked()           //수정 버튼�
 
     tableModel->select();                                       //테이블 뷰의 정보 최신화
 
-    QList<QString> cinfo;                                       //주문 정보 클래스에 보낼 고객 정보 배열
-    cinfo << name << phoneNumber << address;                    //고객 정보를 담음
+    std::vector<QString> cinfo;                                       //주문 정보 클래스에 보낼 고객 정보 배열
+    cinfo.push_back(name);
+    cinfo.push_back(phoneNumber);
+    cinfo.push_back(address);                                   //고객 정보를 담음
 
     emit clientModified(cid, cinfo);                            //주문 정보 클래스에 고객 정보가 수정됐다는 시그널 방출
     emit sendServerCModified(cid, name);                        //서버 클래스에 고객 정보가 수정됐다는 시그널 방출
@@ -331,7 +338,7 @@ void ClientHandlerForm::on_tableView5_clicked(const QModelIndex &index)
 /*새로운 주문 정보를 등록할 경우 고객 정보를 담아서 보내주는 슬롯함수*/
 void ClientHandlerForm::orderAddedClient(int cid)
 {
-    QList<QString> cinfo;                                       //고객 정보를 담을 배열
+    std::vector<QString> cinfo;                                       //고객 정보를 담을 배열
 
     /*주문 정보 클래스에 보내줄 고객 정보만 가져오는 쿼리문*/
     query->prepare("SELECT name, phone_number, address "
@@ -352,14 +359,16 @@ void ClientHandlerForm::orderAddedClient(int cid)
     QString phoneNum = query->value(phoneNumColIdx).toString();
     QString address = query->value(addressColIdx).toString();
 
-    cinfo << name << phoneNum << address;
+    cinfo.push_back(name);
+    cinfo.push_back(phoneNum);
+    cinfo.push_back(address);
     emit addReturn(cinfo);                                      //담은 고객 정보를 시그널로 방출
 }
 
 /*주문 정보 클래스에서 검색할 경우 필요한 고객 정보를 담아서 보내주는 슬롯함수*/
 void ClientHandlerForm::orderSearchedClient(int cid)
 {
-    QList<QString> cinfo;                                       //고객 정보를 담을 배열
+    std::vector<QString> cinfo;                                       //고객 정보를 담을 배열
 
     /*주문 정보 클래스에 보내줄 고객 정보만 가져오는 쿼리문*/
     query->prepare("SELECT name, phone_number, address "
@@ -380,7 +389,9 @@ void ClientHandlerForm::orderSearchedClient(int cid)
     QString phoneNum = query->value(phoneNumColIdx).toString();
     QString address = query->value(addressColIdx).toString();
 
-    cinfo << name << phoneNum << address;
+    cinfo.push_back(name);
+    cinfo.push_back(phoneNum);
+    cinfo.push_back(address);
 
     emit searchReturn(cinfo);                                   //담은 고객 정보를 시그널로 방출
 }
@@ -388,7 +399,7 @@ void ClientHandlerForm::orderSearchedClient(int cid)
 /*주문 정보 클래스에서 주문 정보를 수정할 경우 필요한 고객 정보를 담아서 보내주는 슬롯함수*/
 void ClientHandlerForm::orderModifiedClient(int cid, int row)
 {
-    QList<QString> cinfo;                                       //고객 정보를 담을 배열
+    std::vector<QString> cinfo;                                       //고객 정보를 담을 배열
 
     /*주문 정보 클래스에 보내줄 고객 정보만 가져오는 쿼리문*/
     query->prepare("SELECT name, phone_number, address "
@@ -409,7 +420,9 @@ void ClientHandlerForm::orderModifiedClient(int cid, int row)
     QString phoneNum = query->value(phoneNumColIdx).toString();
     QString address = query->value(addressColIdx).toString();
 
-    cinfo << name << phoneNum << address;
+    cinfo.push_back(name);
+    cinfo.push_back(phoneNum);
+    cinfo.push_back(address);
 
     emit modifyReturn(cinfo, row);                              //담은 고객 정보를 시그널로 방출
 }

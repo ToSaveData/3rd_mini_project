@@ -24,81 +24,81 @@ CS_App::CS_App(QWidget *parent)
     ChattingForm->setWindowTitle(tr("ChattingServerForm"));
 
     /*주문 정보 클래스의 콤보박스에 담을 고객, 제품 정보를 요청하는 시그널을 각 슬롯에 연결*/
-    connect(OForm, SIGNAL(clientComboBox(QComboBox*, QComboBox*)), CForm,
-            SLOT(setClientComboBox(QComboBox*, QComboBox*)));
-    connect(OForm, SIGNAL(productComboBox(QComboBox*, QComboBox*)), PForm,
-            SLOT(setProductComboBox(QComboBox*, QComboBox*)));
+    assert(connect(OForm, SIGNAL(clientComboBox(QComboBox*, QComboBox*)), CForm,
+            SLOT(setClientComboBox(QComboBox*, QComboBox*))));
+    assert(connect(OForm, SIGNAL(productComboBox(QComboBox*, QComboBox*)), PForm,
+            SLOT(setProductComboBox(QComboBox*, QComboBox*))));
 
     /*고객 정보 최초 입력 시, 고객 정보를 채팅 서버 클래스에 보내주는 시그널을 슬롯에 연결*/
-    connect(CForm, SIGNAL(clientLoad(QList<int>, QList<QString>)),
-            ChattingForm, SLOT(addClientInfo(QList<int>, QList<QString>)));
+    assert(connect(CForm, SIGNAL(clientLoad(std::vector<int>, std::vector<QString>)),
+            ChattingForm, SLOT(addClientInfo(std::vector<int>, std::vector<QString>))));
 
     /*고객, 제품 정보 클래스에서 정보가 추가됐다는 시그널을 주문 정보 클래스의 슬롯에 연결*/
-    connect(CForm, SIGNAL(clientAdded(int)), OForm, SLOT(clientAdded()));
-    connect(PForm, SIGNAL(productAdded(int)), OForm, SLOT(productAdded()));
+    assert(connect(CForm, SIGNAL(clientAdded(int)), OForm, SLOT(clientAdded())));
+    assert(connect(PForm, SIGNAL(productAdded(int)), OForm, SLOT(productAdded())));
 
     /*주문 정보 등록 시 고객, 제품 정보 클래스에 정보를 요청하는 시그널을 각 슬롯에 연결*/
-    connect(OForm, SIGNAL(orderAddedClient(int)),
-            CForm, SLOT(orderAddedClient(int)));
-    connect(OForm, SIGNAL(orderAddedProduct(int)),
-            PForm, SLOT(orderAddedProduct(int)));
+    assert(connect(OForm, SIGNAL(orderAddedClient(int)),
+            CForm, SLOT(orderAddedClient(int))));
+    assert(connect(OForm, SIGNAL(orderAddedProduct(int)),
+            PForm, SLOT(orderAddedProduct(int))));
 
     /*고객, 제품 정보 클래스에서 정보를 담아 주문 정보 클래스로 반환하는 시그널/슬롯 연결*/
-    connect(CForm, SIGNAL(addReturn(QList<QString>)),
-            OForm, SLOT(addReturnClient(QList<QString>)));
-    connect(PForm, SIGNAL(addReturn(QList<QString>)),
-            OForm, SLOT(addReturnProduct(QList<QString>)));
+    assert(connect(CForm, SIGNAL(addReturn(std::vector<QString>)),
+            OForm, SLOT(addReturnClient(std::vector<QString>))));
+    assert(connect(PForm, SIGNAL(addReturn(std::vector<QString>)),
+            OForm, SLOT(addReturnProduct(std::vector<QString>))));
 
     /*주문 정보 검색 시 고객, 제품 정보 클래스에 정보를 요청하는 시그널을 각 슬롯에 연결*/
-    connect(OForm, SIGNAL(orderSearchedClient(int)),
-            CForm, SLOT(orderSearchedClient(int)));
-    connect(OForm, SIGNAL(orderSearchedProduct(int)),
-            PForm, SLOT(orderSearchedProduct(int)));
+    assert(connect(OForm, SIGNAL(orderSearchedClient(int)),
+            CForm, SLOT(orderSearchedClient(int))));
+    assert(connect(OForm, SIGNAL(orderSearchedProduct(int)),
+            PForm, SLOT(orderSearchedProduct(int))));
 
     /*고객, 제품 정보 클래스에서 정보를 담아 주문 정보 클래스로 반환하는 시그널/슬롯 연결*/
-    connect(CForm, SIGNAL(searchReturn(QList<QString>)),
-            OForm, SLOT(searchReturnClient(QList<QString>)));
-    connect(PForm, SIGNAL(searchReturn(QList<QString>)),
-            OForm, SLOT(searchReturnProduct(QList<QString>)));
+    assert(connect(CForm, SIGNAL(searchReturn(std::vector<QString>)),
+            OForm, SLOT(searchReturnClient(std::vector<QString>))));
+    assert(connect(PForm, SIGNAL(searchReturn(std::vector<QString>)),
+            OForm, SLOT(searchReturnProduct(std::vector<QString>))));
 
     /*주문 정보 수정 시 고객, 제품 정보 클래스에 정보를 요청하는 시그널을 각 슬롯에 연결*/
-    connect(OForm, SIGNAL(orderModifiedClient(int, int)),
-            CForm, SLOT(orderModifiedClient(int, int)));
-    connect(OForm, SIGNAL(orderModifiedProduct(int, int)),
-            PForm, SLOT(orderModifiedProduct(int, int)));
+    assert(connect(OForm, SIGNAL(orderModifiedClient(int, int)),
+            CForm, SLOT(orderModifiedClient(int, int))));
+    assert(connect(OForm, SIGNAL(orderModifiedProduct(int, int)),
+            PForm, SLOT(orderModifiedProduct(int, int))));
 
     /*고객, 제품 정보 클래스에서 정보를 담아 주문 정보 클래스로 반환하는 시그널/슬롯 연결*/
-    connect(CForm, SIGNAL(modifyReturn(QList<QString>, int)),
-            OForm, SLOT(modifyReturnClient(QList<QString>, int)));
-    connect(PForm, SIGNAL(modifyReturn(QList<QString>, int)),
-            OForm, SLOT(modifyReturnProduct(QList<QString>, int)));
+    assert(connect(CForm, SIGNAL(modifyReturn(std::vector<QString>, int)),
+            OForm, SLOT(modifyReturnClient(std::vector<QString>, int))));
+    assert(connect(PForm, SIGNAL(modifyReturn(std::vector<QString>, int)),
+            OForm, SLOT(modifyReturnProduct(std::vector<QString>, int))));
 
     /*고객, 제품 정보 클래스에서 정보가 삭제됐다는 시그널을 주문 정보 클래스의 슬롯에 연결*/
-    connect(CForm, SIGNAL(clientRemoved(int)),
-            OForm, SLOT(clientRemoved(int)));
-    connect(PForm, SIGNAL(productRemoved(int)),
-            OForm, SLOT(productRemoved(int)));
+    assert(connect(CForm, SIGNAL(clientRemoved(int)),
+            OForm, SLOT(clientRemoved(int))));
+    assert(connect(PForm, SIGNAL(productRemoved(int)),
+            OForm, SLOT(productRemoved(int))));
 
     /*고객, 제품 정보 클래스에서 정보가 수정됐다는 시그널을 주문 정보 클래스의 슬롯에 연결*/
-    connect(CForm, SIGNAL(clientModified(int,QList<QString>)),
-            OForm, SLOT(clientModified(int,QList<QString>)));
-    connect(PForm, SIGNAL(productModified(int,QList<QString>)),
-            OForm, SLOT(productModified(int,QList<QString>)));
+    assert(connect(CForm, SIGNAL(clientModified(int,std::vector<QString>)),
+            OForm, SLOT(clientModified(int,std::vector<QString>))));
+    assert(connect(PForm, SIGNAL(productModified(int,std::vector<QString>)),
+            OForm, SLOT(productModified(int,std::vector<QString>))));
 
     /*채팅 서버 클래스에 새로 등록된 고객 정보를 보내는 시그널을 슬롯에 연결*/
-    connect(CForm, SIGNAL(sendServer(QList<int>, QList<QString>)),
-            ChattingForm, SLOT(addClientInfo(QList<int>, QList<QString>)));
+    assert(connect(CForm, SIGNAL(sendServer(std::vector<int>, std::vector<QString>)),
+            ChattingForm, SLOT(addClientInfo(std::vector<int>, std::vector<QString>))));
 
     /*채팅 서버 클래스에서 고객 목록을 다시 불러올 때 발생하는 시그널/슬롯 연결*/
-    connect(ChattingForm, SIGNAL(reset()), CForm, SLOT(dataLoad()));
+    assert(connect(ChattingForm, SIGNAL(reset()), CForm, SLOT(dataLoad())));
 
     /*고객 정보가 변경됐을 경우 채팅 서버 클래스에 변경된 정보를 보내주는 시그널/슬롯 연결*/
-    connect(CForm, SIGNAL(sendServerCModified(int, QString)),
-            ChattingForm, SLOT(modifyClientInfo(int, QString)));
+    assert(connect(CForm, SIGNAL(sendServerCModified(int, QString)),
+            ChattingForm, SLOT(modifyClientInfo(int, QString))));
 
     /*고객 정보가 삭제됐을 경우 채팅 서버 클래스에 삭제된 정보를 보내주는 시그널/슬롯 연결*/
-    connect(CForm, SIGNAL(sendServerCRemoved(QString)),
-            ChattingForm, SLOT(removeClientInfo(QString)));
+    assert(connect(CForm, SIGNAL(sendServerCRemoved(QString)),
+            ChattingForm, SLOT(removeClientInfo(QString))));
 
     OForm->dataload();                                              //주문 정보 클래스에 고객, 제품 정보 목록 입력
     CForm->dataLoad();                                              //채팅 서버 클래스에 고객 목록 입력
@@ -128,6 +128,16 @@ CS_App::CS_App(QWidget *parent)
 CS_App::~CS_App()                                                   //소멸자
 {
     delete ui;                                                      //생성자에서 만든 포인터 객체 소멸
+    delete CForm;
+    delete PForm;
+    delete OForm;
+    delete ChattingForm;
+
+    ui = nullptr;
+    CForm = nullptr;
+    PForm = nullptr;
+    OForm = nullptr;
+    ChattingForm = nullptr;
 }
 
 void CS_App::on_actiontr_ClientHandlerForm_triggered()              //고객 정보 폼 액션을 선택했을 경우

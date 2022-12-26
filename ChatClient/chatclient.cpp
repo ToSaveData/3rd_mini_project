@@ -50,11 +50,11 @@ ChatClient::ChatClient(QWidget *parent)                                     //�
 
     connectButton = new QPushButton(tr("Log In"), this);                    //connectButton에 Log In으로 텍스트를 설정하여
                                                                             //새로운 객체 대입
-    connect(name, SIGNAL(returnPressed()),                                  //이름 입력란에서 Enter 키를 누르면
-            connectButton, SIGNAL(clicked()));                              //connectButton이 클릭되는 시그널을 보내도록 설정
+    assert(connect(name, SIGNAL(returnPressed()),                                  //이름 입력란에서 Enter 키를 누르면
+            connectButton, SIGNAL(clicked())));                              //connectButton이 클릭되는 시그널을 보내도록 설정
 
     /*위젯들의 레이아웃을 설정*/
-    QHBoxLayout *serverLayout = new QHBoxLayout;
+    serverLayout = new QHBoxLayout;
     serverLayout->addWidget(id);
     serverLayout->addWidget(name);
     serverLayout->addStretch(1);
@@ -69,26 +69,26 @@ ChatClient::ChatClient(QWidget *parent)                                     //�
     inputLine = new QLineEdit(this);                                        //메세지 입력란에 새로운 객체 대입
 
     /*메세지 입력란에서 Enter 키를 누를 경우 슬롯함수 실행*/
-    connect(inputLine, SIGNAL(returnPressed()), SLOT(sendData()));          //sendData 함수 실행
-    connect(inputLine, SIGNAL(returnPressed()), inputLine, SLOT(clear()));  //메세지 입력란을 비워줌
+    assert(connect(inputLine, SIGNAL(returnPressed()), SLOT(sendData())));          //sendData 함수 실행
+    assert(connect(inputLine, SIGNAL(returnPressed()), inputLine, SLOT(clear())));  //메세지 입력란을 비워줌
 
     sentButton = new QPushButton(tr("Send"), this);                         //전송 버튼에 새로운 객체 대입
 
     /*전송 버튼을 클릭할 경우 슬롯함수 실행*/
-    connect(sentButton, SIGNAL(clicked()), SLOT(sendData()));               //sendData 함수 실행
-    connect(sentButton, SIGNAL(clicked()), inputLine, SLOT(clear()));       //메세지 입력란을 비워줌
+    assert(connect(sentButton, SIGNAL(clicked()), SLOT(sendData())));               //sendData 함수 실행
+    assert(connect(sentButton, SIGNAL(clicked()), inputLine, SLOT(clear())));       //메세지 입력란을 비워줌
 
     /*로그인 전이므로 초기값으로 메세지 입력란과 전송 버튼 비활성화*/
     inputLine->setDisabled(true);
     sentButton->setDisabled(true);
 
     /*위젯들의 레이아웃을 설정*/
-    QHBoxLayout *inputLayout = new QHBoxLayout;
+    inputLayout = new QHBoxLayout;
     inputLayout->addWidget(inputLine);
     inputLayout->addWidget(sentButton);
 
     fileButton = new QPushButton(tr("File Transfer"), this);                //파일 전송 버튼에 새로운 객체 대입
-    connect(fileButton, SIGNAL(clicked()), SLOT(sendFile()));               //파일 전송 버튼을 누르면 SendFile 함수를 실행
+    assert(connect(fileButton, SIGNAL(clicked()), SLOT(sendFile())));               //파일 전송 버튼을 누르면 SendFile 함수를 실행
     fileButton->setDisabled(true);                                          //로그인 전 파일 전송 버튼 비활성화
 
     /*채팅 로그 저장 기능*/
@@ -96,17 +96,17 @@ ChatClient::ChatClient(QWidget *parent)                                     //�
 
     /*종료 기능*/
     QPushButton* quitButton = new QPushButton(tr("Log Out"), this);         //종료 버튼에 Log Out 텍스트를 설정하고 객체 대입
-    connect(quitButton, SIGNAL(clicked()), qApp, SLOT(quit()));             //종료 버튼을 누르면 채팅 클라이언트 폼 종료
+    assert(connect(quitButton, SIGNAL(clicked()), qApp, SLOT(quit())));             //종료 버튼을 누르면 채팅 클라이언트 폼 종료
 
     /*위젯들의 레이아웃을 설정*/
-    QHBoxLayout *buttonLayout = new QHBoxLayout;
+    buttonLayout = new QHBoxLayout;
     buttonLayout->addWidget(fileButton);
     buttonLayout->addStretch(1);
     buttonLayout->addWidget(save);
     buttonLayout->addWidget(quitButton);
 
     /*위젯들의 레이아웃을 설정*/
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    mainLayout = new QVBoxLayout(this);
     mainLayout->addLayout(serverLayout);
     mainLayout->addWidget(message);
     mainLayout->addLayout(inputLayout);
@@ -116,18 +116,18 @@ ChatClient::ChatClient(QWidget *parent)                                     //�
     /* 채팅을 위한 소켓 */
     clientSocket = new QTcpSocket(this);                                    //클라이언트 소켓 생성
 
-    connect(clientSocket, &QAbstractSocket::errorOccurred, this,            //소켓에서 에러 발생시
-            [=]{ qDebug() << clientSocket->errorString(); });               //디버그 메세지로 에러코드 출력
+    assert(connect(clientSocket, &QAbstractSocket::errorOccurred, this,            //소켓에서 에러 발생시
+            [=]{ qDebug() << clientSocket->errorString(); }));               //디버그 메세지로 에러코드 출력
 
-    connect(clientSocket, SIGNAL(readyRead()), SLOT(receiveData()));        //소켓이 read할 준비가 되면
+    assert(connect(clientSocket, SIGNAL(readyRead()), SLOT(receiveData())));        //소켓이 read할 준비가 되면
                                                                             //receiveData 함수 실행
 
-    connect(clientSocket, SIGNAL(disconnected()), SLOT(disconnect()));      //소켓의 연결이 끊어지면
+    assert(connect(clientSocket, SIGNAL(disconnected()), SLOT(disconnect())));      //소켓의 연결이 끊어지면
                                                                             //disconnect 함수 실행
     /* 파일 전송을 위한 소켓 */
     fileClient = new QTcpSocket(this);                                      //파일 전송 소켓에 새로운 객체 대입
-    connect(fileClient, SIGNAL(bytesWritten(qint64)),                       //파일이 전송되기 시작하면
-            SLOT(goOnSend(qint64)));                                        //goOnSend 함수 실행
+    assert(connect(fileClient, SIGNAL(bytesWritten(qint64)),                       //파일이 전송되기 시작하면
+            SLOT(goOnSend(qint64))));                                        //goOnSend 함수 실행
 
     /*progressDialog 객체 생성 및 속성 설정*/
     progressDialog = new QProgressDialog(0);
@@ -135,14 +135,14 @@ ChatClient::ChatClient(QWidget *parent)                                     //�
     progressDialog->reset();                                                //autoClose가 활성화 되면
                                                                             //reset시 창을 닫음
 
-    connect(connectButton, SIGNAL(clicked()),                               //connectButton이 클릭되면
-            this, SLOT(connectButtonClicked()));                            //connectButtonClicked() 함수 실행
+    assert(connect(connectButton, SIGNAL(clicked()),                               //connectButton이 클릭되면
+            this, SLOT(connectButtonClicked())));                            //connectButtonClicked() 함수 실행
 
     logThread = new LogThread(this);                                        //스레드 객체 생성
     logThread->start();                                                     //스레드 실행
 
-    connect(save, SIGNAL(clicked()),                                        //save 버튼을 누르면 로그 저장
-            logThread, SLOT(saveData()));
+    assert(connect(save, SIGNAL(clicked()),                                        //save 버튼을 누르면 로그 저장
+            logThread, SLOT(saveData())));
 
     setWindowTitle(tr("Chat Client"));                                      //창 이름 설정
 }
@@ -150,7 +150,22 @@ ChatClient::ChatClient(QWidget *parent)                                     //�
 ChatClient::~ChatClient()                                                   //소멸자
 {
     logThread->terminate();                                                 //스레드 소멸
+    logThread->deleteLater();
     clientSocket->close();                                                  //채팅 소켓을 닫음
+    clientSocket->deleteLater();
+
+    delete serverLayout;
+    delete inputLayout;
+    delete buttonLayout;
+    delete mainLayout;
+    delete progressDialog;
+    logThread = nullptr;
+    clientSocket = nullptr;
+    serverLayout = nullptr;
+    inputLayout = nullptr;
+    buttonLayout = nullptr;
+    mainLayout = nullptr;
+    progressDialog = nullptr;
 }
 
 /*connectButton의 현재 text에 따라 다른 동작을 수행*/
@@ -196,8 +211,11 @@ void ChatClient::closeEvent(QCloseEvent*)                                   //�
 //    sendProtocol(Chat_LogOut, name->text().toStdString().data());           //로그아웃 프로토콜 전송
     sendProtocol(Chat_Close, name->text().toStdString().data());           //로그아웃 프로토콜 전송
     clientSocket->disconnectFromHost();                                     //소켓과 연결된 서버와 연결 끊기
-    if(clientSocket->state() != QAbstractSocket::UnconnectedState)          //만약 소켓의 연결상태가 유지된다면
+    if(clientSocket->state() != QAbstractSocket::UnconnectedState){          //만약 소켓의 연결상태가 유지된다면
         clientSocket->waitForDisconnected();                                //연결이 끊어질 때까지 기다림
+        clientSocket->deleteLater();
+        clientSocket = nullptr;
+    }
 }
 
 /* 데이터를 받을 때 */
@@ -276,8 +294,11 @@ void ChatClient::disconnect()                                               //�
 
     sendProtocol(Chat_LogOut, name->text().toStdString().data());           //로그아웃 프로토콜 전송
     clientSocket->disconnectFromHost();                                     //서버와 소켓의 연결을 끊음
-    if(clientSocket->state() != QAbstractSocket::UnconnectedState)          //만약 소켓의 연결상태가 유지된다면
+    if(clientSocket->state() != QAbstractSocket::UnconnectedState){          //만약 소켓의 연결상태가 유지된다면
         clientSocket->waitForDisconnected();                                //연결이 끊어질 때까지 기다림
+        clientSocket->deleteLater();
+        clientSocket = nullptr;
+    }
 }
 
 /* 프로토콜을 생성해서 서버로 전송 */
@@ -333,6 +354,8 @@ void ChatClient::goOnSend(qint64 numBytes)                                  //nu
     {
         qDebug() << tr("File sending completed!");                          //디버그 메세지 출력
         progressDialog->reset();                                            //progressDialog 초기화 및 닫기
+        delete file;
+        file = nullptr;
     }
 }
 
@@ -384,7 +407,7 @@ void ChatClient::sendFile()                                                 //�
         fileClient->write(outBlock);                                        //소켓에 보낼 파일을 wirte함
 
         progressDialog->setMaximum(totalSize);                              //progressDialog에 최대치 설정
-        progressDialog->setValue(totalSize-byteToWrite);                    //progressDialog에 현재 진행된 만큼 값 설정
+        progressDialog->setValue(totalSize - byteToWrite);                    //progressDialog에 현재 진행된 만큼 값 설정
         progressDialog->show();                                             //progressDialog 출력
     }
     qDebug() << QString(tr("Sending file %1")).arg(filename);               //디버그 메세지 출력
