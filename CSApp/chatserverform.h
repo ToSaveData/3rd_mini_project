@@ -62,7 +62,7 @@ private:
     Ui::ChatServerForm *ui;                             //UI
     QTcpServer *chatServer;                             //채팅용 서버
     QTcpServer *fileServer;                             //파일 전송용 서버
-    std::vector<QTcpSocket*> clientList;                      //로그인 한 고객의 소켓을 저장하는 배열
+    std::vector<QTcpSocket*> clientVec;                      //로그인 한 고객의 소켓을 저장하는 배열
     std::unordered_map<quint16, QString> clientNameHash;             //고객이 접속한 소켓의 포트번호를 key로 이름을 저장하는 해쉬
     std::unordered_map<QString, QTcpSocket*> clientSocketHash;       //고객의 이름을 key로 소켓을 저장하는 해쉬
     std::unordered_map<QString, int> clientIDHash;                   //고객의 이름을 key로 id를 저장하는 해쉬

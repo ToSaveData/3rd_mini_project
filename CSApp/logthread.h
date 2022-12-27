@@ -14,7 +14,7 @@ public:
 private:
     void run();                                             //로그를 저장하는 함수
 
-    std::vector<QTreeWidgetItem*> itemList;                       //로그의 내용을 저장하는 배열
+    std::vector<QTreeWidgetItem*> itemVec;                       //로그의 내용을 저장하는 배열
     QString filename;                                       //파일의 이름
 
 public slots:

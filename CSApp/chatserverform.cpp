@@ -115,16 +115,16 @@ ChatServerForm::~ChatServerForm()                                           //�
     fileServer = nullptr;
 }
 
-void ChatServerForm::addClientInfo(std::vector<int> cIdInfo, std::vector<QString> cNameInfo) //고객 정보를 서버에 추가하는 함수
+void ChatServerForm::addClientInfo(std::vector<int> cIdInfoVec, std::vector<QString> cNameInfoVec) //고객 정보를 서버에 추가하는 함수
 {
     int cnt = 0;                                                             //고객 성명 배열의 순서를 기억하기 위한 임시 변수
-    Q_FOREACH(auto i, cNameInfo)                                             //고객 성명이 저장된 수만큼 반복
+    Q_FOREACH(auto i, cNameInfoVec)                                             //고객 성명이 저장된 수만큼 반복
     {
         QTreeWidgetItem *item = new QTreeWidgetItem();                       //트리위젯에 삽입할 아이템 생성
         item->setIcon(0, QIcon(":/icon_image/redLight.png"));                //0열에 아이콘 삽입
         item->setText(1, i + "  ");                                          //1열에 이름과 공백 2칸 삽입(오프라인임을 의미)
         ui->waittingRoomTreeWidget->addTopLevelItem(item);                   //아이템을 트리위젯에 삽입
-        clientIDHash[i] = cIdInfo[cnt++];                                    //id해쉬에 이름을 키로 id를 저장
+        clientIDHash[i] = cIdInfoVec[cnt++];                                    //id해쉬에 이름을 키로 id를 저장
         ui->waittingRoomTreeWidget->resizeColumnToContents(0);               //트리위젯의 열 너비를 들어간 내용을 중심으로 재설정
     }
 }
@@ -286,6 +286,8 @@ void ChatServerForm::receiveData()                                           //�
     QString ip = clientConnection->peerAddress().toString();                 //소켓과 연결된 IP주소 저장
     quint16 port = clientConnection->peerPort();                             //소켓의 포트번호 저장
     QString name = QString::fromStdString(data);                             //데이터로 넘어온 이름 저장
+
+    //여기에 있는 QStringList의 경우 스플릿 때문에 유지
     QStringList info;
     QString logInName;
     QString id;
@@ -328,7 +330,7 @@ void ChatServerForm::receiveData()                                           //�
             {
                 item->setIcon(0, QIcon(":/icon_image/greenLight.png"));      //로그인 아이콘 설정
                 item->setText(1, logInName + " ");                           //로그인 상태 설정(공백 1개)
-                clientList.push_back(clientConnection);                         //로그인한 고객의 소켓을 리스트에 저장
+                clientVec.push_back(clientConnection);                         //로그인한 고객의 소켓을 리스트에 저장
                 clientSocketHash[logInName] = clientConnection;              //이름을 key로 소켓을 해쉬에 저장
             }
         }
@@ -355,7 +357,7 @@ void ChatServerForm::receiveData()                                           //�
         break;
     case Chat_Talk:                                                          //프로토콜이 메세지 보내기인 경우
     {
-        foreach(QTcpSocket *sock, clientList)                                //접속한 클라이언트 수만큼 반복
+        foreach(QTcpSocket *sock, clientVec)                                //접속한 클라이언트 수만큼 반복
         {
 #if 1
             for(const auto& e : clientIDHash){
@@ -437,9 +439,9 @@ void ChatServerForm::receiveData()                                           //�
             {
                 item->setIcon(0, QIcon(":/icon_image/redLight.png"));        //로그아웃 상태 아이콘 설정
                 item->setText(1, name + "  ");                               //로그아웃 상태 설정(공백 2개)
-                for(std::vector<QTcpSocket*>::iterator e = clientList.begin(); e != clientList.end(); ++e){
+                for(std::vector<QTcpSocket*>::iterator e = clientVec.begin(); e != clientVec.end(); ++e){
                     if(*e == clientConnection){
-                        clientList.erase(e);
+                        clientVec.erase(e);
 //                        e = clientList.begin();
                         break;
                     }
@@ -493,9 +495,9 @@ void ChatServerForm::removeClient()                                          //�
         item->setText(1, name + "  ");                                       //로그아웃 상태 설정(공백 2개)
     }
 
-    for(std::vector<QTcpSocket*>::iterator e = clientList.begin(); e != clientList.end(); ++e){
+    for(std::vector<QTcpSocket*>::iterator e = clientVec.begin(); e != clientVec.end(); ++e){
         if(*e == clientConnection){
-            clientList.erase(e);
+            clientVec.erase(e);
 //            e = clientList.begin();
             break;
         }

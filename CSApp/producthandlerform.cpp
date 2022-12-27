@@ -1,6 +1,5 @@
 #include "producthandlerform.h"
 #include "ui_producthandlerform.h"
-//#include <std::vector>
 #include <QComboBox>
 #include <QTableView>
 #include <QSqlTableModel>
@@ -15,9 +14,11 @@ ProductHandlerForm::ProductHandlerForm(QWidget *parent) :           //생성자
 {
     Pui->setupUi(this);                                             //현재 클래스에 UI를 세팅
 
-    QVector<QTableView*> view;                                      //모델 설정이 필요한 테이블 뷰 모음
-    view << Pui->tableView1 << Pui->tableView2
-         << Pui->tableView4 << Pui->tableView5;
+    std::vector<QTableView*> viewVec;                                      //모델 설정이 필요한 테이블 뷰 모음
+    viewVec.push_back(Pui->tableView1);
+    viewVec.push_back(Pui->tableView2);
+    viewVec.push_back(Pui->tableView4);
+    viewVec.push_back(Pui->tableView5);
 
     QSqlDatabase db = QSqlDatabase::addDatabase                     //QSQLITE DB에 연결명을 설정하고 추가
                         ("QSQLITE", "productConnection");
@@ -57,10 +58,10 @@ ProductHandlerForm::ProductHandlerForm(QWidget *parent) :           //생성자
     Pui->tableView3->setModel(searchModel);                     //tableView3에 searchModel을 적용
 
     for(int i = 0; i < 4; i++)                                  //남은 테이블 뷰에 TableModel을 적용
-        view[i]->setModel(tableModel);
+        viewVec[i]->setModel(tableModel);
 
-    for(int i = 0; i < view.size(); i++)                        //테이블 뷰의 입력 정보에 따른 열 너비 조절
-        view[i]->resizeColumnsToContents();
+    for(int i = 0; i < viewVec.size(); i++)                        //테이블 뷰의 입력 정보에 따른 열 너비 조절
+        viewVec[i]->resizeColumnsToContents();
 }
 
 ProductHandlerForm::~ProductHandlerForm()                           //소멸자
@@ -80,33 +81,36 @@ ProductHandlerForm::~ProductHandlerForm()                           //소멸자
 int ProductHandlerForm::makePid()                                   //제품 ID를 생성하는 함수
 {
     if(0 == tableModel->rowCount())    return 1001;                 //첫 번째 제품 ID: 1001
-    else return 10;                                                 //두 번째 이후는 아무 숫자
+    return 10;                                                      //두 번째 이후는 아무 숫자
 }
 
 void ProductHandlerForm::on_enrollPushButton_clicked()              //등록 버튼을 눌렀을 때
 {
     /*제품 정보가 표시될 4개의 테이블 뷰 모음*/
-    QVector<QTableView*> view;
-    view << Pui->tableView1 << Pui->tableView2
-         << Pui->tableView4 << Pui->tableView5;
+    std::vector<QTableView*> viewVec;
+    viewVec.push_back(Pui->tableView1);
+    viewVec.push_back(Pui->tableView2);
+    viewVec.push_back(Pui->tableView4);
+    viewVec.push_back(Pui->tableView5);
 
     /*제품 정보가 입력된 lineEdit 위젯 모음*/
-    QVector<QLineEdit*> lineEdit;
-    lineEdit << Pui->nameLineEdit1 << Pui->priceLineEdit1
-             << Pui->sortLineEdit1;
+    std::vector<QLineEdit*> lineEditVec;
+    lineEditVec.push_back(Pui->nameLineEdit1);
+    lineEditVec.push_back(Pui->priceLineEdit1);
+    lineEditVec.push_back(Pui->sortLineEdit1);
 
     /*입력된 데이터가 하나라도 없을 경우 등록하지 않음*/
-    for(int i = 0; i < lineEdit.size(); i++)
+    for(int i = 0; i < lineEditVec.size(); i++)
     {
-        if(lineEdit[i]->text() == "")
+        if(lineEditVec[i]->text() == "")
             return;
     }
 
     /*입력된 데이터 저장*/
     int pid = makePid();
-    QString name = lineEdit[0]->text();
-    int price = lineEdit[1]->text().toInt();
-    QString sort = lineEdit[2]->text();
+    QString name = lineEditVec[0]->text();
+    int price = lineEditVec[1]->text().toInt();
+    QString sort = lineEditVec[2]->text();
 
     if(1001 == pid)                                                 //첫 번째 데이터가 입력될 경우
     {
@@ -140,11 +144,11 @@ void ProductHandlerForm::on_enrollPushButton_clicked()              //등록 버
         emit productAdded(id);
     }
 
-    for(int i = 0; i < view.size(); i++)                            //테이블 뷰의 입력 정보에 따른 열 너비 조절
-        view[i]->resizeColumnsToContents();
+    for(int i = 0; i < viewVec.size(); i++)                            //테이블 뷰의 입력 정보에 따른 열 너비 조절
+        viewVec[i]->resizeColumnsToContents();
 
-    for (int i = 0 ; i < lineEdit.size(); i++)                      //입력란 초기화
-        lineEdit[i]->clear();
+    for (int i = 0 ; i < lineEditVec.size(); i++)                      //입력란 초기화
+        lineEditVec[i]->clear();
 }
 
 void ProductHandlerForm::on_searchPushButton_clicked()              //검색 버튼을 눌렀을 때
@@ -190,27 +194,31 @@ void ProductHandlerForm::on_removePushButton_clicked()              //삭제 버
 void ProductHandlerForm::on_modifyPushButton_clicked()              //수정 버튼을 눌렀을 때
 {
     /*제품 정보가 표시될 4개의 테이블 뷰 모음*/
-    QVector<QTableView*> view;
-    view << Pui->tableView1 << Pui->tableView2
-         << Pui->tableView4 << Pui->tableView5;
+    std::vector<QTableView*> viewVec;
+    viewVec.push_back(Pui->tableView1);
+    viewVec.push_back(Pui->tableView2);
+    viewVec.push_back(Pui->tableView4);
+    viewVec.push_back(Pui->tableView5);
 
     /*수정될 정보가 입력된 lineEdit 위젯 모음*/
-    QVector<QLineEdit*> lineEdit;
-    lineEdit << Pui->idLineEdit << Pui->nameLineEdit2
-             << Pui->priceLineEdit2 << Pui->sortLineEdit2;
+    std::vector<QLineEdit*> lineEditVec;
+    lineEditVec.push_back(Pui->idLineEdit);
+    lineEditVec.push_back(Pui->nameLineEdit2);
+    lineEditVec.push_back(Pui->priceLineEdit2);
+    lineEditVec.push_back(Pui->sortLineEdit2);
 
     /*입력란에 입력된 정보가 하나라도 없으면 정보 수정을 하지 않음*/
-    for(int i = 0; i < lineEdit.size(); i++)
+    for(int i = 0; i < lineEditVec.size(); i++)
     {
-        if(lineEdit[i]->text() == "")
+        if(lineEditVec[i]->text() == "")
             return;
     }
 
     /*입력란에 입력된 정보를 각 변수에 저장*/
-    int pid = lineEdit[0]->text().toInt();
-    QString name = lineEdit[1]->text();
-    int price = lineEdit[2]->text().toInt();
-    QString sort = lineEdit[3]->text();
+    int pid = lineEditVec[0]->text().toInt();
+    QString name = lineEditVec[1]->text();
+    int price = lineEditVec[2]->text().toInt();
+    QString sort = lineEditVec[3]->text();
 
     /*client 테이블의 정보를 수정하는 쿼리문*/
     query->prepare("UPDATE product SET "
@@ -224,21 +232,21 @@ void ProductHandlerForm::on_modifyPushButton_clicked()              //수정 버
 
     tableModel->select();                                           //테이블 뷰의 정보 최신화
 
-    std::vector<QString> pinfo;                                           //주문 정보 클래스에 보낼 제품 정보 배열
+    std::vector<QString> pinfoVec;                                           //주문 정보 클래스에 보낼 제품 정보 배열
 
     /*제품 정보를 담음*/
-    pinfo.push_back(sort);
-    pinfo.push_back(name);
-    pinfo.push_back(QString::number(price));
+    pinfoVec.push_back(sort);
+    pinfoVec.push_back(name);
+    pinfoVec.push_back(QString::number(price));
 
     /*주문 정보 클래스에 제품 정보가 수정됐다는 시그널 방출*/
-    emit productModified(pid, pinfo);
+    emit productModified(pid, pinfoVec);
 
-    for(int i = 0; i < view.size(); i++)                            //테이블 뷰의 입력 정보에 따른 열 너비 조절
-        view[i]->resizeColumnsToContents();
+    for(int i = 0; i < viewVec.size(); i++)                            //테이블 뷰의 입력 정보에 따른 열 너비 조절
+        viewVec[i]->resizeColumnsToContents();
 
-    for (int i = 0 ; i < lineEdit.size(); i++)                      //입력란 초기화
-        lineEdit[i]->clear();
+    for (int i = 0 ; i < lineEditVec.size(); i++)                      //입력란 초기화
+        lineEditVec[i]->clear();
 }
 
 /*현재 제품 정보를 입력란에 채워주는 슬롯함수*/
@@ -266,7 +274,7 @@ void ProductHandlerForm::on_tableView5_clicked(const QModelIndex &index)
 /*새로운 주문 정보를 등록할 경우 제품 정보를 담아서 보내주는 슬롯함수*/
 void ProductHandlerForm::orderAddedProduct(int pid)
 {
-    std::vector<QString> pinfo;                                           //제품 정보를 담을 배열
+    std::vector<QString> pinfoVec;                                           //제품 정보를 담을 배열
 
     /*주문 정보 클래스에 보내줄 제품 정보만 가져오는 쿼리문*/
     query->prepare("SELECT sort, name, price "
@@ -287,17 +295,17 @@ void ProductHandlerForm::orderAddedProduct(int pid)
     QString name = query->value(nameColIdx).toString();
     int price = query->value(priceColIdx).toInt();
 
-    pinfo.push_back(sort);
-    pinfo.push_back(name);
-    pinfo.push_back(QString::number(price));
+    pinfoVec.push_back(sort);
+    pinfoVec.push_back(name);
+    pinfoVec.push_back(QString::number(price));
 
-    emit addReturn(pinfo);                                          //담은 제품 정보를 시그널로 방출
+    emit addReturn(pinfoVec);                                          //담은 제품 정보를 시그널로 방출
 }
 
 /*주문 정보 클래스에서 검색할 경우 필요한 제품 정보를 담아서 보내주는 슬롯함수*/
 void ProductHandlerForm::orderSearchedProduct(int pid)
 {
-    std::vector<QString> pinfo;                                           //제품 정보를 담을 배열
+    std::vector<QString> pinfoVec;                                           //제품 정보를 담을 배열
 
     /*주문 정보 클래스에 보내줄 제품 정보만 가져오는 쿼리문*/
     query->prepare("SELECT sort, name, price "
@@ -318,17 +326,17 @@ void ProductHandlerForm::orderSearchedProduct(int pid)
     QString name = query->value(nameColIdx).toString();
     int price = query->value(priceColIdx).toInt();
 
-    pinfo.push_back(sort);
-    pinfo.push_back(name);
-    pinfo.push_back(QString::number(price));
+    pinfoVec.push_back(sort);
+    pinfoVec.push_back(name);
+    pinfoVec.push_back(QString::number(price));
 
-    emit searchReturn(pinfo);                                       //담은 제품 정보를 시그널로 방출
+    emit searchReturn(pinfoVec);                                       //담은 제품 정보를 시그널로 방출
 }
 
 /*주문 정보 클래스에서 주문 정보를 수정할 경우 필요한 제품 정보를 담아서 보내주는 슬롯함수*/
 void ProductHandlerForm::orderModifiedProduct(int pid, int row)
 {
-    std::vector<QString> pinfo;                                           //제품 정보를 담을 배열
+    std::vector<QString> pinfoVec;                                           //제품 정보를 담을 배열
 
     /*주문 정보 클래스에 보내줄 제품 정보만 가져오는 쿼리문*/
     query->prepare("SELECT sort, name, price "
@@ -349,11 +357,11 @@ void ProductHandlerForm::orderModifiedProduct(int pid, int row)
     QString name = query->value(nameColIdx).toString();
     int price = query->value(priceColIdx).toInt();
 
-    pinfo.push_back(sort);
-    pinfo.push_back(name);
-    pinfo.push_back(QString::number(price));
+    pinfoVec.push_back(sort);
+    pinfoVec.push_back(name);
+    pinfoVec.push_back(QString::number(price));
 
-    emit modifyReturn(pinfo, row);                                  //담은 제품 정보를 시그널로 방출
+    emit modifyReturn(pinfoVec, row);                                  //담은 제품 정보를 시그널로 방출
 }
 
 /*주문 정보 클래스의 제품 정보 콤보박스 채우기*/

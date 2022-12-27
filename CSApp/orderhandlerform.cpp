@@ -1,6 +1,5 @@
 #include "orderhandlerform.h"
 #include "ui_orderhandlerform.h"
-//#include <std::vector>
 #include <QHash>
 #include <QComboBox>
 #include <QTableView>
@@ -18,9 +17,11 @@ OrderHandlerForm::OrderHandlerForm(QWidget *parent) :               //생성자
 {
     Oui->setupUi(this);                                             //현재 클래스에 UI를 세팅
 
-    QVector<QTableView*> view;                                      //모델 설정이 필요한 테이블 뷰 모음
-    view << Oui->tableView1 << Oui->tableView2
-         << Oui->tableView4 << Oui->tableView5;
+    std::vector<QTableView*> viewVec;                                      //모델 설정이 필요한 테이블 뷰 모음
+    viewVec.push_back(Oui->tableView1);
+    viewVec.push_back(Oui->tableView2);
+    viewVec.push_back(Oui->tableView4);
+    viewVec.push_back(Oui->tableView5);
 
     QSqlDatabase db = QSqlDatabase::addDatabase                     //QSQLITE DB에 연결명을 설정하고 추가
             ("QSQLITE", "orderConnection");
@@ -102,13 +103,13 @@ OrderHandlerForm::OrderHandlerForm(QWidget *parent) :               //생성자
 
     Oui->tableView3->setModel(searchModel);                     //tableView3에 searchModel을 적용
 
-    view[0]->setModel(tableModel);                              //tableView1에 tableModel을 적용
+    viewVec[0]->setModel(tableModel);                              //tableView1에 tableModel을 적용
 
     for(int i = 1; i < 4; i++)                                  //남은 테이블 뷰에 detailModel을 적용
-        view[i]->setModel(detailModel);
+        viewVec[i]->setModel(detailModel);
 
-    for(int i = 0; i < view.size(); i++)                        //테이블 뷰의 입력 정보에 따른 열 너비 조절
-        view[i]->resizeColumnsToContents();
+    for(int i = 0; i < viewVec.size(); i++)                        //테이블 뷰의 입력 정보에 따른 열 너비 조절
+        viewVec[i]->resizeColumnsToContents();
 }
 
 OrderHandlerForm::~OrderHandlerForm()                               //소멸자
@@ -136,9 +137,10 @@ void OrderHandlerForm::dataload()
                          Oui->productInfoComboBox);
 
     /*주문 정보가 표시될 테이블 뷰 모음*/
-    QVector<QTableView*> view;
-    view << Oui->tableView2 << Oui->tableView4
-         << Oui->tableView5;
+    std::vector<QTableView*> viewVec;
+    viewVec.push_back(Oui->tableView2);
+    viewVec.push_back(Oui->tableView4);
+    viewVec.push_back(Oui->tableView5);
 
     /*order_info에 저장된 주문 정보를 detailModel에 표시하는 반복문*/
     for(int i = 0; i < tableModel->rowCount(); i++)
@@ -153,59 +155,63 @@ void OrderHandlerForm::dataload()
         int pid = tableModel->record(i).value("p_id").toInt();
 
         /*detailMoedl에 들어갈 데이터들*/
-        QStringList str;
-        str << QString::number(oid) << date
-            << QString::number(quantity);
+        std::vector<QString> str;
+        str.push_back(QString::number(oid));
+        str.push_back(date);
+        str.push_back(QString::number(quantity));
 
         /*QStandardItem*로 자료형 변환*/
-        std::vector<QStandardItem*> items;
+        std::vector<QStandardItem*> itemsVec;
         for(int i = 0; i < str.size(); i++)
         {
-            items.push_back(new QStandardItem(str[i]));
+            itemsVec.push_back(new QStandardItem(str[i]));
         }
 
         /*detailMoedl에 데이터 추가*/
-        detailModel->appendRow(items[0]);
-        detailModel->setItem(cnt, 1, items[1]);
-        detailModel->setItem(cnt, 8, items[2]);
+        detailModel->appendRow(itemsVec[0]);
+        detailModel->setItem(cnt, 1, itemsVec[1]);
+        detailModel->setItem(cnt, 8, itemsVec[2]);
 
         /*deatilModel에 들어갈 고객 정보와 제품 정보를 요청하는 시그널 방출*/
         emit orderAddedClient(cid);
         emit orderAddedProduct(pid);
     }
 
-    for(int i = 0; i < view.size(); i++)                            //테이블 뷰의 입력 정보에 따른 열 너비 조절
-        view[i]->resizeColumnsToContents();
+    for(int i = 0; i < viewVec.size(); i++)                            //테이블 뷰의 입력 정보에 따른 열 너비 조절
+        viewVec[i]->resizeColumnsToContents();
 }
 
 int OrderHandlerForm::makeOid()                                     //주문 ID를 생성하는 함수
 {
     if(0 == tableModel->rowCount())    return 100001;               //첫 번째 주문 ID: 100001
-    else return 10;                                                 //두 번째 이후는 아무 숫자
+    return 10;                                                      //두 번째 이후는 아무 숫자
 }
 
 void OrderHandlerForm::on_enrollPushButton_clicked()                //등록 버튼을 눌렀을 때
 {
     /*주문 정보가 표시될 4개의 테이블 뷰 모음*/
-    QVector<QTableView*> view;
-    view << Oui->tableView1 << Oui->tableView2
-         << Oui->tableView4 << Oui->tableView5;
+    std::vector<QTableView*> viewVec;
+    viewVec.push_back(Oui->tableView1);
+    viewVec.push_back(Oui->tableView2);
+    viewVec.push_back(Oui->tableView4);
+    viewVec.push_back(Oui->tableView5);
 
     /*주문 정보가 입력된 lineEdit 위젯 모음*/
-    QVector<QLineEdit*> lineEdit;
-    lineEdit << Oui->orderDateLineEdit1
-             << Oui->orderQuantityLineEdit1;
+    std::vector<QLineEdit*> lineEditVec;
+    lineEditVec.push_back(Oui->orderDateLineEdit1);
+    lineEditVec.push_back(Oui->orderQuantityLineEdit1);
 
     /*고객 및 제품 정보가 선택된 콤보박스 모음*/
-    QVector<QComboBox*> comboBox;
-    comboBox << Oui->clientIDComboBox1 << Oui->productIDComboBox1;
+    std::vector<QComboBox*> comboBoxVec;
+    comboBoxVec.push_back(Oui->clientIDComboBox1);
+    comboBoxVec.push_back(Oui->productIDComboBox1);
 
     /*입력될 주문 정보가 하나라도 없을 경우 등록하지 않음*/
-    for(int i = 0; i < lineEdit.size(); i++)
+    for(int i = 0; i < lineEditVec.size(); i++)
     {
-        if(lineEdit[i]->text() == "")
+        if(lineEditVec[i]->text() == "")
             return;
-        if(comboBox[i]->currentText() == tr("select item"))
+        if(comboBoxVec[i]->currentText() == tr("select item"))
             return;
     }
 
@@ -232,21 +238,22 @@ void OrderHandlerForm::on_enrollPushButton_clicked()                //등록 버
         tableModel->select();                                       //테이블 뷰의 정보 최신화
 
         /*detailMoedl에 들어갈 데이터들*/
-        QStringList str;
-        str << QString::number(oid) << date
-            << QString::number(quantity);
+        std::vector<QString> str;
+        str.push_back(QString::number(oid));
+        str.push_back(date);
+        str.push_back(QString::number(quantity));
 
         /*QStandardItem*로 자료형 변환*/
-        std::vector<QStandardItem*> items;
+        std::vector<QStandardItem*> itemsVec;
         for(int i = 0; i < str.size(); i++)
         {
-            items.push_back(new QStandardItem(str[i]));
+            itemsVec.push_back(new QStandardItem(str[i]));
         }
 
         /*detailMoedl에 데이터 추가*/
-        detailModel->appendRow(items[0]);
-        detailModel->setItem(cnt, 1, items[1]);
-        detailModel->setItem(cnt, 8, items[2]);
+        detailModel->appendRow(itemsVec[0]);
+        detailModel->setItem(cnt, 1, itemsVec[1]);
+        detailModel->setItem(cnt, 8, itemsVec[2]);
     }
     else
     {
@@ -266,29 +273,30 @@ void OrderHandlerForm::on_enrollPushButton_clicked()                //등록 버
         tableModel->select();                                       //테이블 뷰의 정보 최신화
 
         /*detailMoedl에 들어갈 데이터들*/
-        QStringList str;
-        str << QString::number(id) << date
-            << QString::number(quantity);
+        std::vector<QString> str;
+        str.push_back(QString::number(id));
+        str.push_back(date);
+        str.push_back(QString::number(quantity));
 
         /*QStandardItem*로 자료형 변환*/
-        std::vector<QStandardItem*> items;
+        std::vector<QStandardItem*> itemsVec;
         for(int i = 0; i < str.size(); i++)
         {
-            items.push_back(new QStandardItem(str[i]));
+            itemsVec.push_back(new QStandardItem(str[i]));
         }
 
         /*detailMoedl에 데이터 추가*/
-        detailModel->appendRow(items[0]);
-        detailModel->setItem(cnt, 1, items[1]);
-        detailModel->setItem(cnt, 8, items[2]);
+        detailModel->appendRow(itemsVec[0]);
+        detailModel->setItem(cnt, 1, itemsVec[1]);
+        detailModel->setItem(cnt, 8, itemsVec[2]);
     }
 
     /*주문정보가 추가됐다는 시그널을 고객 정보 클래스와 제품 정보 클래스에 방출*/
     emit orderAddedClient(cid);
     emit orderAddedProduct(pid);
 
-    for(int i = 0; i < view.size(); i++)                            //테이블 뷰의 입력 정보에 따른 열 너비 조절
-        view[i]->resizeColumnsToContents();
+    for(int i = 0; i < viewVec.size(); i++)                            //테이블 뷰의 입력 정보에 따른 열 너비 조절
+        viewVec[i]->resizeColumnsToContents();
 
     /*입력란 초기화*/
     Oui->orderDateLineEdit1->clear();
@@ -300,50 +308,56 @@ void OrderHandlerForm::on_enrollPushButton_clicked()                //등록 버
 }
 
 /*등록 탭에서 보낸 시그널로 넘어온 고객 정보로 detailModel을 채우는 슬롯함수*/
-void OrderHandlerForm::addReturnClient(std::vector<QString> cinfo)
+void OrderHandlerForm::addReturnClient(std::vector<QString> cinfoVec)
 {
     /*주문 정보가 표시될 4개의 테이블 뷰 모음*/
-    QVector<QTableView*> view;
-    view << Oui->tableView1 << Oui->tableView2
-         << Oui->tableView4 << Oui->tableView5;
+    std::vector<QTableView*> viewVec;
+    viewVec.push_back(Oui->tableView1);
+    viewVec.push_back(Oui->tableView2);
+    viewVec.push_back(Oui->tableView4);
+    viewVec.push_back(Oui->tableView5);
 
     /*넘어온 고객 정보를 각 변수로 저장 */
-    QString name = cinfo[0];
-    QString phoneNum = cinfo[1];
-    QString address = cinfo[2];
+    QString name = cinfoVec[0];
+    QString phoneNum = cinfoVec[1];
+    QString address = cinfoVec[2];
 
     /*detailMoedl에 들어갈 데이터들*/
-    QStringList str;
-    str << name << phoneNum << address;
+    std::vector<QString> str;
+    str.push_back(name);
+    str.push_back(phoneNum);
+    str.push_back(address);
 
     /*QStandardItem*로 자료형 변환*/
-    std::vector<QStandardItem*> items;
+    std::vector<QStandardItem*> itemsVec;
     for(int i = 0; i < str.size(); i++)
     {
-        items.push_back(new QStandardItem(str[i]));
+        itemsVec.push_back(new QStandardItem(str[i]));
     }
 
     /*detailMoedl에 데이터 추가*/
-    detailModel->setItem(cnt, 2, items[0]);
-    detailModel->setItem(cnt, 3, items[1]);
-    detailModel->setItem(cnt, 4, items[2]);
+    detailModel->setItem(cnt, 2, itemsVec[0]);
+    detailModel->setItem(cnt, 3, itemsVec[1]);
+    detailModel->setItem(cnt, 4, itemsVec[2]);
 
-    for(int i = 0; i < view.size(); i++)                            //테이블 뷰의 입력 정보에 따른 열 너비 조절
-        view[i]->resizeColumnsToContents();
+    for(int i = 0; i < viewVec.size(); i++)                            //테이블 뷰의 입력 정보에 따른 열 너비 조절
+        viewVec[i]->resizeColumnsToContents();
 }
 
 /*등록 탭에서 보낸 시그널로 넘어온 제품 정보로 detailModel을 채우는 슬롯함수*/
-void OrderHandlerForm::addReturnProduct(std::vector<QString> pinfo)
+void OrderHandlerForm::addReturnProduct(std::vector<QString> pinfoVec)
 {
     /*주문 정보가 표시될 4개의 테이블 뷰 모음*/
-    QVector<QTableView*> view;
-    view << Oui->tableView1 << Oui->tableView2
-         << Oui->tableView4 << Oui->tableView5;
+    std::vector<QTableView*> viewVec;
+    viewVec.push_back(Oui->tableView1);
+    viewVec.push_back(Oui->tableView2);
+    viewVec.push_back(Oui->tableView4);
+    viewVec.push_back(Oui->tableView5);
 
     /*넘어온 제품 정보를 각 변수로 저장*/
-    QString sort = pinfo[0];
-    QString name = pinfo[1];
-    int price = pinfo[2].toInt();
+    QString sort = pinfoVec[0];
+    QString name = pinfoVec[1];
+    int price = pinfoVec[2].toInt();
 
     /*detailModel에 필요한 기존 정보 저장*/
     int quantity = tableModel->record(cnt).
@@ -351,26 +365,29 @@ void OrderHandlerForm::addReturnProduct(std::vector<QString> pinfo)
     int totalPrice = price * quantity;
 
     /*detailMoedl에 들어갈 데이터들*/
-    QStringList str;
-    str << sort << name << QString::number(price)
-        <<QString::number(quantity) << QString::number(totalPrice);
+    std::vector<QString> str;
+    str.push_back(sort);
+    str.push_back(name);
+    str.push_back(QString::number(price));
+    str.push_back(QString::number(quantity));
+    str.push_back(QString::number(totalPrice));
 
     /*QStandardItem*로 자료형 변환*/
-    std::vector<QStandardItem*> items;
+    std::vector<QStandardItem*> itemsVec;
     for(int i = 0; i < str.size(); i++)
     {
-        items.push_back(new QStandardItem(str[i]));
+        itemsVec.push_back(new QStandardItem(str[i]));
     }
 
     /*detailMoedl에 데이터 추가*/
-    detailModel->setItem(cnt, 5, items[0]);
-    detailModel->setItem(cnt, 6, items[1]);
-    detailModel->setItem(cnt, 7, items[2]);
-    detailModel->setItem(cnt, 8, items[3]);
-    detailModel->setItem(cnt, 9, items[4]);
+    detailModel->setItem(cnt, 5, itemsVec[0]);
+    detailModel->setItem(cnt, 6, itemsVec[1]);
+    detailModel->setItem(cnt, 7, itemsVec[2]);
+    detailModel->setItem(cnt, 8, itemsVec[3]);
+    detailModel->setItem(cnt, 9, itemsVec[4]);
 
-    for(int i = 0; i < view.size(); i++)                            //테이블 뷰의 입력 정보에 따른 열 너비 조절
-        view[i]->resizeColumnsToContents();
+    for(int i = 0; i < viewVec.size(); i++)                            //테이블 뷰의 입력 정보에 따른 열 너비 조절
+        viewVec[i]->resizeColumnsToContents();
 
     cnt++;                                                          //detailModel 다음 등록행 저장
 }
@@ -400,21 +417,22 @@ void OrderHandlerForm::on_searchPushButton_clicked()                //검색 버
     int pid = tableModel->record(0).value("p_id").toInt();
 
     /*detailMoedl에 들어갈 데이터들*/
-    QStringList str;
-    str << QString::number(oid) << date
-        << QString::number(quantity);
+    std::vector<QString> str;
+    str.push_back(QString::number(oid));
+    str.push_back(date);
+    str.push_back(QString::number(quantity));
 
     /*QStandardItem*로 자료형 변환*/
-    std::vector<QStandardItem*> items;
+    std::vector<QStandardItem*> itemsVec;
     for(int i = 0; i < str.size(); i++)
     {
-        items.push_back(new QStandardItem(str[i]));
+        itemsVec.push_back(new QStandardItem(str[i]));
     }
 
     /*detailMoedl에 데이터 추가*/
-    searchModel->appendRow(items[0]);
-    searchModel->setItem(0, 1, items[1]);
-    searchModel->setItem(0, 8, items[2]);
+    searchModel->appendRow(itemsVec[0]);
+    searchModel->setItem(0, 1, itemsVec[1]);
+    searchModel->setItem(0, 8, itemsVec[2]);
 
     /*고객 정보 클래스에 고객 정보를 요청하는 시그널 방출*/
     emit orderSearchedClient(cid);
@@ -428,59 +446,64 @@ void OrderHandlerForm::on_searchPushButton_clicked()                //검색 버
 }
 
 /*검색 탭에서 보낸 시그널로 넘어온 고객 정보로 detailModel을 채우는 슬롯함수*/
-void OrderHandlerForm::searchReturnClient(std::vector<QString> cinfo)
+void OrderHandlerForm::searchReturnClient(std::vector<QString> cinfoVec)
 {
     /*넘어온 고객 정보를 각 변수로 저장*/
-    QString name = cinfo[0];
-    QString phoneNum = cinfo[1];
-    QString address = cinfo[2];
+    QString name = cinfoVec[0];
+    QString phoneNum = cinfoVec[1];
+    QString address = cinfoVec[2];
 
     /*detailMoedl에 들어갈 데이터들*/
-    QStringList str;
-    str << name << phoneNum << address;
+    std::vector<QString>  str;
+    str.push_back(name);
+    str.push_back(phoneNum);
+    str.push_back(address);
 
     /*QStandardItem*로 자료형 변환*/
-    std::vector<QStandardItem*> items;
+    std::vector<QStandardItem*> itemsVec;
     for(int i = 0; i < str.size(); i++)
     {
-        items.push_back(new QStandardItem(str[i]));
+        itemsVec.push_back(new QStandardItem(str[i]));
     }
 
     /*detailMoedl에 데이터 추가*/
-    searchModel->setItem(0, 2, items[0]);
-    searchModel->setItem(0, 3, items[1]);
-    searchModel->setItem(0, 4, items[2]);
+    searchModel->setItem(0, 2, itemsVec[0]);
+    searchModel->setItem(0, 3, itemsVec[1]);
+    searchModel->setItem(0, 4, itemsVec[2]);
 }
 
 /*검색 탭에서 보낸 시그널로 넘어온 제품 정보로 detailModel을 채우는 슬롯함수*/
-void OrderHandlerForm::searchReturnProduct(std::vector<QString> pinfo)
+void OrderHandlerForm::searchReturnProduct(std::vector<QString> pinfoVec)
 {
     /*넘어온 제품 정보를 각 변수로 저장*/
-    QString sort = pinfo[0];
-    QString name = pinfo[1];
-    int price = pinfo[2].toInt();
+    QString sort = pinfoVec[0];
+    QString name = pinfoVec[1];
+    int price = pinfoVec[2].toInt();
     int quantity = tableModel->record(0).
                     value("order_quantity").toInt();
     int totalPrice = price * quantity;
 
     /*detailMoedl에 들어갈 데이터들*/
-    QStringList str;
-    str << sort << name << QString::number(price)
-        <<QString::number(quantity) << QString::number(totalPrice);
+    std::vector<QString>  str;
+    str.push_back(sort);
+    str.push_back(name);
+    str.push_back(QString::number(price));
+    str.push_back(QString::number(quantity));
+    str.push_back(QString::number(totalPrice));
 
     /*QStandardItem*로 자료형 변환*/
-    std::vector<QStandardItem*> items;
+    std::vector<QStandardItem*> itemsVec;
     for(int i = 0; i < str.size(); i++)
     {
-        items.push_back(new QStandardItem(str[i]));
+        itemsVec.push_back(new QStandardItem(str[i]));
     }
 
     /*detailMoedl에 데이터 추가*/
-    searchModel->setItem(0, 5, items[0]);
-    searchModel->setItem(0, 6, items[1]);
-    searchModel->setItem(0, 7, items[2]);
-    searchModel->setItem(0, 8, items[3]);
-    searchModel->setItem(0, 9, items[4]);
+    searchModel->setItem(0, 5, itemsVec[0]);
+    searchModel->setItem(0, 6, itemsVec[1]);
+    searchModel->setItem(0, 7, itemsVec[2]);
+    searchModel->setItem(0, 8, itemsVec[3]);
+    searchModel->setItem(0, 9, itemsVec[4]);
 
     Oui->tableView3->resizeColumnsToContents();                     //테이블 뷰의 입력 정보에 따른 열 너비 조절
 
@@ -514,28 +537,29 @@ void OrderHandlerForm::on_removePushButton_clicked()                //삭제 버
 void OrderHandlerForm::on_modifyPushButton_clicked()                //수정 버튼을 눌렀을 때
 {
     /*수정될 정보가 입력된 lineEdit 위젯 모음*/
-    QVector<QLineEdit*> lineEdit;
-    lineEdit << Oui->orderIDLineEdit << Oui->orderDateLineEdit2
-             << Oui->orderQuantityLineEdit2;
+    std::vector<QLineEdit*> lineEditVec;
+    lineEditVec.push_back(Oui->orderIDLineEdit);
+    lineEditVec.push_back(Oui->orderDateLineEdit2);
+    lineEditVec.push_back(Oui->orderQuantityLineEdit2);
 
     /*현재 lineEdit에 있는 정보를 각 변수에 저장*/
-    int oid = lineEdit[0]->text().toInt();
-    QString date = lineEdit[1]->text();
-    int quantity = lineEdit[2]->text().toInt();
+    int oid = lineEditVec[0]->text().toInt();
+    QString date = lineEditVec[1]->text();
+    int quantity = lineEditVec[2]->text().toInt();
 
     /*주문 정보 수정 탭에 있는 콤보박스 모음*/
-    QVector<QComboBox*> comboBox;
-    comboBox << Oui->clientInfoComboBox
-             << Oui->productInfoComboBox;
+    std::vector<QComboBox*> comboBoxVec;
+    comboBoxVec.push_back(Oui->clientInfoComboBox);
+    comboBoxVec.push_back(Oui->productInfoComboBox);
 
     /*수정하려는 데이터가 하나라도 비어 있는 경우 수정 불가*/
-    for(int i = 0; i < lineEdit.size(); i++)
+    for(int i = 0; i < lineEditVec.size(); i++)
     {
-        if(lineEdit[i]->text() == "")
+        if(lineEditVec[i]->text() == "")
             return;
     }
-    if(comboBox[0]->currentText() == tr("select item")) return;
-    if(comboBox[1]->currentText() == tr("select item")) return;
+    if(comboBoxVec[0]->currentText() == tr("select item")) return;
+    if(comboBoxVec[1]->currentText() == tr("select item")) return;
 
     /*고객 정보 콤보박스에서 현재 선택된 데이터의 index 출력*/
     int cBoxIndex = Oui->clientInfoComboBox->currentIndex();
@@ -568,21 +592,22 @@ void OrderHandlerForm::on_modifyPushButton_clicked()                //수정 버
     tableModel->select();                                           //테이블 뷰의 정보 최신화
 
     /*detailMoedl에 들어갈 데이터들*/
-    QStringList str;
-    str << QString::number(oid) << date
-        << QString::number(quantity);
+    std::vector<QString>  str;
+    str.push_back(QString::number(oid));
+    str.push_back(date);
+    str.push_back(QString::number(quantity));
 
     /*QStandardItem*로 자료형 변환*/
-    std::vector<QStandardItem*> items;
+    std::vector<QStandardItem*> itemsVec;
     for(int i = 0; i < str.size(); i++)
     {
-        items.push_back(new QStandardItem(str[i]));
+        itemsVec.push_back(new QStandardItem(str[i]));
     }
 
     /*detailMoedl에 데이터 추가*/
-    detailModel->setItem(row, 0, items[0]);
-    detailModel->setItem(row, 1, items[1]);
-    detailModel->setItem(row, 8, items[2]);
+    detailModel->setItem(row, 0, itemsVec[0]);
+    detailModel->setItem(row, 1, itemsVec[1]);
+    detailModel->setItem(row, 8, itemsVec[2]);
 
     /*고객 정보 클래스에 주문 정보 변경에 필요한 고객 정보를 요청하는 시그널 방출*/
     emit orderModifiedClient(cid, row);
@@ -601,68 +626,74 @@ void OrderHandlerForm::on_modifyPushButton_clicked()                //수정 버
 }
 
 /*수정 탭에서 보낸 시그널로 넘어온 고객 정보로 detailModel을 채우는 슬롯함수*/
-void OrderHandlerForm::modifyReturnClient(std::vector<QString> cinfo, int row)
+void OrderHandlerForm::modifyReturnClient(std::vector<QString> cinfoVec, int row)
 {
     /*넘어온 고객 정보를 각 변수로 저장*/
-    QString name = cinfo[0];
-    QString phoneNum = cinfo[1];
-    QString address = cinfo[2];
+    QString name = cinfoVec[0];
+    QString phoneNum = cinfoVec[1];
+    QString address = cinfoVec[2];
 
     /*detailMoedl에 들어갈 데이터들*/
-    QStringList str;
-    str << name << phoneNum << address;
+    std::vector<QString>  str;
+    str.push_back(name);
+    str.push_back(phoneNum);
+    str.push_back(address);
 
     /*QStandardItem*로 자료형 변환*/
-    std::vector<QStandardItem*> items;
+    std::vector<QStandardItem*> itemsVec;
     for(int i = 0; i < str.size(); i++)
     {
-        items.push_back(new QStandardItem(str[i]));
+        itemsVec.push_back(new QStandardItem(str[i]));
     }
 
     /*detailMoedl에 데이터 추가*/
-    detailModel->setItem(row, 2, items[0]);
-    detailModel->setItem(row, 3, items[1]);
-    detailModel->setItem(row, 4, items[2]);
+    detailModel->setItem(row, 2, itemsVec[0]);
+    detailModel->setItem(row, 3, itemsVec[1]);
+    detailModel->setItem(row, 4, itemsVec[2]);
 }
 
 /*수정 탭에서 보낸 시그널로 넘어온 제품 정보로 detailModel을 채우는 슬롯함수*/
-void OrderHandlerForm::modifyReturnProduct(std::vector<QString> pinfo, int row)
+void OrderHandlerForm::modifyReturnProduct(std::vector<QString> pinfoVec, int row)
 {
     /*넘어온 제품 정보를 각 변수로 저장*/
-    QString sort = pinfo[0];
-    QString name = pinfo[1];
-    int price = pinfo[2].toInt();
+    QString sort = pinfoVec[0];
+    QString name = pinfoVec[1];
+    int price = pinfoVec[2].toInt();
 
     /*기존 수량과 총 가격 정보를 각 변수로 저장*/
     int quantity = detailModel->item(row, 8)->text().toInt();
     int totalPrice = price * quantity;
 
     /*detailMoedl에 들어갈 데이터들*/
-    QStringList str;
-    str << sort << name << QString::number(price)
-        <<QString::number(quantity) << QString::number(totalPrice);
+    std::vector<QString>  str;
+    str.push_back(sort);
+    str.push_back(name);
+    str.push_back(QString::number(price));
+    str.push_back(QString::number(quantity));
+    str.push_back(QString::number(totalPrice));
 
     /*QStandardItem*로 자료형 변환*/
-    std::vector<QStandardItem*> items;
+    std::vector<QStandardItem*> itemsVec;
     for(int i = 0; i < str.size(); i++)
     {
-        items.push_back(new QStandardItem(str[i]));
+        itemsVec.push_back(new QStandardItem(str[i]));
     }
 
     /*detailMoedl에 데이터 추가*/
-    detailModel->setItem(row, 5, items[0]);
-    detailModel->setItem(row, 6, items[1]);
-    detailModel->setItem(row, 7, items[2]);
-    detailModel->setItem(row, 8, items[3]);
-    detailModel->setItem(row, 9, items[4]);
+    detailModel->setItem(row, 5, itemsVec[0]);
+    detailModel->setItem(row, 6, itemsVec[1]);
+    detailModel->setItem(row, 7, itemsVec[2]);
+    detailModel->setItem(row, 8, itemsVec[3]);
+    detailModel->setItem(row, 9, itemsVec[4]);
 }
 
 /*현재 주문 정보를 입력란에 채워주는 슬롯함수*/
 void OrderHandlerForm::on_tableView5_clicked(const QModelIndex &index)
 {
-    QVector<QLineEdit*> lineEdit;                                   //현재 주문 정보를 대입할 LineEdit 위젯 저장
-    lineEdit << Oui->orderIDLineEdit << Oui->orderDateLineEdit2
-             << Oui->orderQuantityLineEdit2;
+    std::vector<QLineEdit*> lineEditVec;                                   //현재 주문 정보를 대입할 LineEdit 위젯 저장
+    lineEditVec.push_back(Oui->orderIDLineEdit);
+    lineEditVec.push_back(Oui->orderDateLineEdit2);
+    lineEditVec.push_back(Oui->orderQuantityLineEdit2);
 
     int row = index.row();                                          //현재 행을 저장
 
@@ -676,9 +707,9 @@ void OrderHandlerForm::on_tableView5_clicked(const QModelIndex &index)
     QString pName = detailModel->item(row, 6)->text();
 
     /*입력란에 고객 및 제품 정보 설정*/
-    lineEdit[0]->setText(QString::number(oid));
-    lineEdit[1]->setText(date);
-    lineEdit[2]->setText(QString::number(quantity));
+    lineEditVec[0]->setText(QString::number(oid));
+    lineEditVec[1]->setText(date);
+    lineEditVec[2]->setText(QString::number(quantity));
 
     /*콤보박스에 고객 및 제품 정보 설정*/
     Oui->clientInfoComboBox->setCurrentText
@@ -706,13 +737,13 @@ void OrderHandlerForm::clientRemoved(int cid)
                         Oui->clientInfoComboBox);
 
     /*삭제된 cid를 포함하는 주문 ID를 저장하는 배열을 채움*/
-    std::vector<int> oidList;
+    std::vector<int> oidVec;
     for(int i = 0; i < tableModel->rowCount(); i++)
     {
         if(tableModel->record(i).value("c_id").toInt()== cid)
         {
             int oid = tableModel->record(i).value("o_id").toInt();
-            oidList.push_back(oid);
+            oidVec.push_back(oid);
         }
     }
 
@@ -722,11 +753,11 @@ void OrderHandlerForm::clientRemoved(int cid)
     query->exec();
 
     /*oid가 저장된 수만큼 cid가 포함된 주문 내역 삭제 반복*/
-    for(int i = 0; i < oidList.size(); i++)
+    for(int i = 0; i < oidVec.size(); i++)
     {
         int row;                                                    //삭제될 정보가 있는 행
         foreach (auto k, detailModel->
-                 findItems(QString::number(oidList[i])))
+                 findItems(QString::number(oidVec[i])))
         {
             row = k->index().row();                                 //삭제될 행 저장
             detailModel->removeRows(row, 1);                        //detailModel에서 해당 행 삭제
@@ -743,13 +774,13 @@ void OrderHandlerForm::productRemoved(int pid)
                          Oui->productInfoComboBox);
 
     /*삭제된 pid를 포함하는 주문 ID를 저장하는 배열을 채움*/
-    std::vector<int> oidList;
+    std::vector<int> oidVec;
     for(int i = 0; i < tableModel->rowCount(); i++)
     {
         if(tableModel->record(i).value("p_id").toInt()== pid)
         {
             int oid = tableModel->record(i).value("o_id").toInt();
-            oidList.push_back(oid);
+            oidVec.push_back(oid);
         }
     }
 
@@ -759,11 +790,11 @@ void OrderHandlerForm::productRemoved(int pid)
     query->exec();
 
     /*oid가 저장된 수만큼 pid가 포함된 주문 내역 삭제 반복*/
-    for(int i = 0; i < oidList.size(); i++)
+    for(int i = 0; i < oidVec.size(); i++)
     {
         int row;                                                    //삭제될 정보가 있는 행
         foreach (auto k, detailModel->
-                 findItems(QString::number(oidList[i])))
+                 findItems(QString::number(oidVec[i])))
         {
             row = k->index().row();                                 //삭제될 행 저장
             detailModel->removeRows(row, 1);                        //detailModel에서 해당 행 삭제
@@ -774,64 +805,66 @@ void OrderHandlerForm::productRemoved(int pid)
 }
 
 /*고객 정보가 수정됐다는 시그널을 받는 슬롯함수*/
-void OrderHandlerForm::clientModified(int cid, std::vector<QString> cinfo)
+void OrderHandlerForm::clientModified(int cid, std::vector<QString> cinfoVec)
 {
     emit clientComboBox(Oui->clientIDComboBox1,                     //고객 정보 관련 콤보박스 정보를 재설정
                         Oui->clientInfoComboBox);
 
     /*수정된 고객 ID를 포함하는 주문 ID를 저장*/
-    std::vector<int> oidList;
+    std::vector<int> oidVec;
     for(int i = 0; i < tableModel->rowCount(); i++)
     {
         if(tableModel->record(i).value("c_id").toInt()== cid)
         {
             int oid = tableModel->record(i).value("o_id").toInt();
-            oidList.push_back(oid);
+            oidVec.push_back(oid);
         }
     }
 
     /*넘어온 고객 정보를 각 변수로 저장*/
-    QString name = cinfo[0];
-    QString phoneNum = cinfo[1];
-    QString address = cinfo[2];
+    QString name = cinfoVec[0];
+    QString phoneNum = cinfoVec[1];
+    QString address = cinfoVec[2];
 
-    for(int i = 0; i < oidList.size(); i++)
+    for(int i = 0; i < oidVec.size(); i++)
     {
         int row;                                                    //수정될 정보가 있는 행
 
         foreach (auto k, detailModel->
-                 findItems(QString::number(oidList[i])))
+                 findItems(QString::number(oidVec[i])))
         {
             row = k->index().row();                                 //수정될 행 저장
 
             /*detailMoedl에 들어갈 데이터들*/
-            QStringList str;
-            str << name << phoneNum << address;
+            std::vector<QString>  str;
+            str.push_back(name);
+            str.push_back(phoneNum);
+            str.push_back(address);
 
             /*QStandardItem*로 자료형 변환*/
-            std::vector<QStandardItem*> items;
+            std::vector<QStandardItem*> itemsVec;
             for(int i = 0; i < str.size(); i++)
             {
-                items.push_back(new QStandardItem(str[i]));
+                itemsVec.push_back(new QStandardItem(str[i]));
             }
 
             /*detailMoedl에 데이터 수정*/
-            detailModel->setItem(row, 2, items[0]);
-            detailModel->setItem(row, 3, items[1]);
-            detailModel->setItem(row, 4, items[2]);
+            detailModel->setItem(row, 2, itemsVec[0]);
+            detailModel->setItem(row, 3, itemsVec[1]);
+            detailModel->setItem(row, 4, itemsVec[2]);
         }
     }
 }
 
 /*제품 정보가 수정됐다는 시그널을 받는 슬롯함수*/
-void OrderHandlerForm::productModified(int pid, std::vector<QString> pinfo)
+void OrderHandlerForm::productModified(int pid, std::vector<QString> pinfoVec)
 {
     emit productComboBox(Oui->productIDComboBox1,                   //제품 정보 관련 콤보박스 정보를 재설정
                          Oui->productInfoComboBox);
 
     /*수정된 제품 ID를 포함하는 주문 ID와 주문 수량을 저장*/
-    std::vector<int> oidList;
-    std::vector<int> quantityList;
+    std::vector<int> oidVec;
+    std::vector<int> quantityVec;
     for(int i = 0; i < tableModel->rowCount(); i++)
     {
         if(tableModel->record(i).value("p_id").toInt()== pid)
@@ -839,46 +872,48 @@ void OrderHandlerForm::productModified(int pid, std::vector<QString> pinfo)
             int oid = tableModel->record(i).value("o_id").toInt();
             int quantity = tableModel->record(i).
                     value("order_quantity").toInt();
-            oidList.push_back(oid);
-            quantityList.push_back(quantity);
+            oidVec.push_back(oid);
+            quantityVec.push_back(quantity);
         }
     }
 
     /*넘어온 제품 정보를 각 변수로 저장*/
-    QString sort = pinfo[0];
-    QString name = pinfo[1];
-    int price = pinfo[2].toInt();
+    QString sort = pinfoVec[0];
+    QString name = pinfoVec[1];
+    int price = pinfoVec[2].toInt();
 
     /*저장된 주문 ID가 포함된 주문 내역 수정*/
-    for(int i = 0; i < oidList.size(); i++)
+    for(int i = 0; i < oidVec.size(); i++)
     {
-        int totalPrice = price * quantityList[i];                   //해당 행의 주문 수량으로 총 가격 계산
+        int totalPrice = price * quantityVec[i];                   //해당 행의 주문 수량으로 총 가격 계산
 
         /*detailMoedl에 들어갈 데이터들*/
-        QStringList str;
-        str << sort << name << QString::number(price)
-            <<QString::number(quantityList[i])
-            << QString::number(totalPrice);
+        std::vector<QString>  str;
+        str.push_back(sort);
+        str.push_back(name);
+        str.push_back(QString::number(price));
+        str.push_back(QString::number(quantityVec[i]));
+        str.push_back(QString::number(totalPrice));
 
         /*QStandardItem*로 자료형 변환*/
-        std::vector<QStandardItem*> items;
+        std::vector<QStandardItem*> itemsVec;
         for(int i = 0; i < str.size(); i++)
         {
-            items.push_back(new QStandardItem(str[i]));
+            itemsVec.push_back(new QStandardItem(str[i]));
         }
 
         int row;                                                    //수정될 정보가 있는 행
         foreach (auto k, detailModel->
-                 findItems(QString::number(oidList[i])))
+                 findItems(QString::number(oidVec[i])))
         {
             row = k->index().row();                                 //수정될 행 저장
 
             /*detailMoedl의 데이터 수정*/
-            detailModel->setItem(row, 5, items[0]);
-            detailModel->setItem(row, 6, items[1]);
-            detailModel->setItem(row, 7, items[2]);
-            detailModel->setItem(row, 8, items[3]);
-            detailModel->setItem(row, 9, items[4]);
+            detailModel->setItem(row, 5, itemsVec[0]);
+            detailModel->setItem(row, 6, itemsVec[1]);
+            detailModel->setItem(row, 7, itemsVec[2]);
+            detailModel->setItem(row, 8, itemsVec[3]);
+            detailModel->setItem(row, 9, itemsVec[4]);
         }
     }
 }
