@@ -10,7 +10,8 @@
 #include <QSqlRecord>
 
 ClientHandlerForm::ClientHandlerForm(QWidget *parent) :         //생성자
-    QWidget(parent), Cui(new Ui::ClientHandlerForm)
+    QWidget(parent), Cui(new Ui::ClientHandlerForm), tableModel(nullptr),
+    searchModel(nullptr), query(nullptr)
 {
     Cui->setupUi(this);                                         //현재 클래스에 UI를 세팅
 

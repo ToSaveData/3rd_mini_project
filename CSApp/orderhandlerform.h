@@ -49,7 +49,7 @@ signals:
 private:
     Ui::OrderHandlerForm *Oui;                                      //UI
     int makeOid();                                                  //주문 ID를 생성하는 함수
-    int cnt = 0;                                                    //detailModel의 입력행 정보
+    int cnt;                                                    //detailModel의 입력행 정보
     QSqlTableModel *tableModel;                                     //주문 정보를 나타낼 테이블 모델
     QStandardItemModel *detailModel;                                //주문 상세 정보를 나타낼 스탠다드 아이템 모델
     QStandardItemModel *searchModel;                                //검색 결과를 나타날 스탠다드 아이템 모델

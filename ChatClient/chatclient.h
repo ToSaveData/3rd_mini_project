@@ -31,7 +31,7 @@ class ChatClient : public QWidget                       //채팅 클라이언트
 {
     Q_OBJECT
 public:
-    const int PORT_NUMBER = 8000;                       //채팅용 서버의 포트를 8000번으로 고정
+    const int PORT_NUMBER;                       //채팅용 서버의 포트를 8000번으로 고정
 
     explicit ChatClient(QWidget *parent = nullptr);     //생성자
     ~ChatClient();                                      //소멸자

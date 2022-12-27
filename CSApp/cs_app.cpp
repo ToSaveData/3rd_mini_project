@@ -9,7 +9,8 @@
 #include <QSqlDatabase>
 
 CS_App::CS_App(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::CS_App)
+    : QMainWindow(parent), ui(new Ui::CS_App), CForm(nullptr), PForm(nullptr),
+      OForm(nullptr), ChattingForm(nullptr)
 {
     ui->setupUi(this);                                              //현재 클래스에 UI를 세팅
 

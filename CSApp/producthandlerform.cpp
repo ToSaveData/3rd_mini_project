@@ -10,8 +10,8 @@
 #include <QSqlRecord>
 
 ProductHandlerForm::ProductHandlerForm(QWidget *parent) :           //생성자
-    QWidget(parent),
-    Pui(new Ui::ProductHandlerForm)
+    QWidget(parent), Pui(new Ui::ProductHandlerForm),
+    tableModel(nullptr), searchModel(nullptr), query(nullptr)
 {
     Pui->setupUi(this);                                             //현재 클래스에 UI를 세팅
 

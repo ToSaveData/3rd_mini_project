@@ -22,7 +22,12 @@
 #define BLOCK_SIZE      1024                                                //블럭 사이즈를 1024로 고정
 
 ChatClient::ChatClient(QWidget *parent)                                     //생성자
-    : QWidget{parent}, isSent(false)                                        //파일 서버 접속 여부를 false로 초기화
+    : QWidget{parent}, PORT_NUMBER{8000}, serverLayout(nullptr), inputLayout(nullptr),
+      buttonLayout(nullptr), mainLayout(nullptr), name(nullptr), id(nullptr), serverAddress(nullptr),
+      serverPort(nullptr), inputLine(nullptr), message(nullptr), connectButton(nullptr), save(nullptr),
+      sentButton(nullptr), fileButton(nullptr), clientSocket(nullptr), fileClient(nullptr),
+      progressDialog(nullptr), file(nullptr), loadSize(0), byteToWrite(0), totalSize(0),
+      outBlock(0), isSent(false), logThread(nullptr)
 {
     /*연결한 서버 정보 입력을 위한 위젯들*/
     id = new QLineEdit(this);                                               //id 입력란에 새로운 객체 대입

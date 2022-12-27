@@ -5,7 +5,7 @@
 #include <QDateTime>
 
 LogThread::LogThread(QObject *parent)                                   //생성자
-    : QThread{parent}
+    : QThread{parent}, filename("")
 {
     QString format = "yyyyMMdd_hhmmss";                                 //년월일_시분초 형식 저장
     filename = QString("log_%1.txt").                                   //파일 이름을 현재 시간으로 설정

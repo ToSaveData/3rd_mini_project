@@ -20,7 +20,9 @@
 
 ChatServerForm::ChatServerForm(QWidget *parent) :                           //생성자
     QWidget(parent),
-    ui(new Ui::ChatServerForm), totalSize(0), byteReceived(0)
+    BLOCK_SIZE(1024), PORT_NUMBER(8000), ui(new Ui::ChatServerForm), chatServer(nullptr),
+    fileServer(nullptr), file(nullptr), progressDialog(nullptr), totalSize(0), byteReceived(0),
+    inBlock(0), logThread(nullptr)
 {
     ui->setupUi(this);                                                      //현재 클래스에 UI를 세팅
 

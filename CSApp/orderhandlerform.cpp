@@ -13,7 +13,8 @@
 #include <QStandardItem>
 
 OrderHandlerForm::OrderHandlerForm(QWidget *parent) :               //생성자
-    QWidget(parent), Oui(new Ui::OrderHandlerForm)
+    QWidget(parent), Oui(new Ui::OrderHandlerForm), cnt(0),
+    tableModel(nullptr), detailModel(nullptr), searchModel(nullptr), query(nullptr)
 {
     Oui->setupUi(this);                                             //현재 클래스에 UI를 세팅
 

@@ -56,8 +56,8 @@ private slots:
     void on_chattingRoomTreeWidget_customContextMenuRequested(const QPoint &pos);
 
 private:
-    const int BLOCK_SIZE = 1024;                        //한 번에 보낼 바이트의 크기를 1024로 고정
-    const int PORT_NUMBER = 8000;                       //서버의 포트번호를 8000으로 고정
+    const int BLOCK_SIZE;                        //한 번에 보낼 바이트의 크기를 1024로 고정
+    const int PORT_NUMBER;                       //서버의 포트번호를 8000으로 고정
 
     Ui::ChatServerForm *ui;                             //UI
     QTcpServer *chatServer;                             //채팅용 서버
