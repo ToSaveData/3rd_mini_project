@@ -1,7 +1,7 @@
 # Created by https://www.toptal.com/developers/gitignore/api/qt,qtcreator,c++
 # Edit at https://www.toptal.com/developers/gitignore?templates=qt,qtcreator,c++
 
-./CSApp/.qtc_clangd/
+CSApp/.qtc_clangd/
 ### C++ ###
 # Prerequisites
 *.d
@@ -115,3 +115,4 @@ compile_commands.json
 
 
 # End of https://www.toptal.com/developers/gitignore/api/qt,qtcreator,c++
+
