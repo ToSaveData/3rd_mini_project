@@ -84,7 +84,7 @@ ProductHandlerForm::~ProductHandlerForm()                           //소멸자
     Pui = nullptr;
 }
 
-int ProductHandlerForm::makePid()                                   //제품 ID를 생성하는 함수
+int ProductHandlerForm::makePid() const                                  //제품 ID를 생성하는 함수
 {
     if(0 == tableModel->rowCount())    return 1001;                 //첫 번째 제품 ID: 1001
     return 10;                                                      //두 번째 이후는 아무 숫자
@@ -174,7 +174,7 @@ void ProductHandlerForm::on_enrollPushButton_clicked()              //등록 버
 #endif
 }
 
-void ProductHandlerForm::on_searchPushButton_clicked()              //검색 버튼을 눌렀을 때
+void ProductHandlerForm::on_searchPushButton_clicked() const              //검색 버튼을 눌렀을 때
 {
     int pid = Pui->searchLineEdit->text().toInt();                  //입력된 고객 ID 저장
 
@@ -191,7 +191,7 @@ void ProductHandlerForm::on_searchPushButton_clicked()              //검색 버
     Pui->searchLineEdit->clear();                                   //입력란 초기화
 }
 
-void ProductHandlerForm::on_resetPushButton_clicked()               //검색 초기화 버튼을 눌렀을 때
+void ProductHandlerForm::on_resetPushButton_clicked() const               //검색 초기화 버튼을 눌렀을 때
 {
     searchModel->setFilter("p_id = ''");                            //client 테이블에 필터 설정
     searchModel->select();                                          //테이블 뷰의 정보 최신화
@@ -291,7 +291,7 @@ void ProductHandlerForm::on_modifyPushButton_clicked()              //수정 버
 }
 
 /*현재 제품 정보를 입력란에 채워주는 슬롯함수*/
-void ProductHandlerForm::on_tableView5_clicked(const QModelIndex &index)
+void ProductHandlerForm::on_tableView5_clicked(const QModelIndex &index) const
 {
     int row = index.row();                                          //현재 선택된 행을 저장
 
@@ -406,7 +406,7 @@ void ProductHandlerForm::orderModifiedProduct(int pid, int row)
 }
 
 /*주문 정보 클래스의 제품 정보 콤보박스 채우기*/
-void ProductHandlerForm::setProductComboBox(QComboBox* PidBox, QComboBox* PinfoBox)
+void ProductHandlerForm::setProductComboBox(QComboBox* PidBox, QComboBox* PinfoBox) const
 {
     /*콤보박스를 채우기 위해 필요한 제품 정보를 나타내는 변수 선언*/
     int id;

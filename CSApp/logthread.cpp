@@ -12,7 +12,7 @@ LogThread::LogThread(QObject *parent):                                   //생�
                 arg(QDateTime::currentDateTime().toString(format));
 }
 
-void LogThread::run()                                                   //로그를 저장하는 함수
+void LogThread::run() const                                                   //로그를 저장하는 함수
 {
     Q_FOREVER
     {
@@ -26,7 +26,7 @@ void LogThread::appendData(QTreeWidgetItem* item)                       //저장
     itemVec.push_back(item);                                              //배열에 아이템을 저장
 }
 
-void LogThread::saveData()                                              //로그를 파일로 출력하는 함수
+void LogThread::saveData() const                                              //로그를 파일로 출력하는 함수
 {
 #if 0
     if(itemVec.size() > 0)                                            //저장할 로그가 있으면

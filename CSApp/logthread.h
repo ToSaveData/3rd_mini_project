@@ -12,14 +12,14 @@ public:
     explicit LogThread(QObject *parent = nullptr);          //생성자
 
 private:
-    void run();                                             //로그를 저장하는 함수
+    void run() const;                                             //로그를 저장하는 함수
 
     std::vector<QTreeWidgetItem*> itemVec;                       //로그의 내용을 저장하는 배열
     QString filename;                                       //파일의 이름
 
 public slots:
     void appendData(QTreeWidgetItem*);                      //저장할 로그를 배열에 추가하는 함수
-    void saveData();                                        //로그를 txt파일로 출력하는 함수
+    void saveData() const;                                        //로그를 txt파일로 출력하는 함수
 };
 
 #endif // LOGTHREAD_H

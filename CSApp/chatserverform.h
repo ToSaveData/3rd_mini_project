@@ -40,9 +40,9 @@ signals:
     void reset();                                       //서버의 고객 목록을 초기화하는 함수
 
 private slots:
-    void acceptConnection();                            //파일 서버의 소켓을 연결하는 함수
+    void acceptConnection() const;                            //파일 서버의 소켓을 연결하는 함수
     void readClient();                                  //클라이언트가 보내는 파일을 read하는 함수
-    void clientConnect();                               //서버와 클라이언트 소켓을 연결하는 함수
+    void clientConnect() const;                               //서버와 클라이언트 소켓을 연결하는 함수
     void receiveData();                                 //클라이언트의 프로토콜을 받고 처리하는 함수
     void removeClient();                                //서버와의 연결이 끊어질 경우 소켓 목록에서 삭제하는 함수
     void addClientInfo(std::vector<int>, std::vector<QString>);     //고객 정보를 추가하는 함수
@@ -52,8 +52,8 @@ private slots:
     void kickOut();                                     //클라이언트에게 강퇴 프로토콜을 보내는 함수
 
     /*고객 목록에서 컨텍스트 메뉴를 띄우는 함수*/
-    void on_waittingRoomTreeWidget_customContextMenuRequested(const QPoint &pos);
-    void on_chattingRoomTreeWidget_customContextMenuRequested(const QPoint &pos);
+    void on_waittingRoomTreeWidget_customContextMenuRequested(const QPoint &pos) const;
+    void on_chattingRoomTreeWidget_customContextMenuRequested(const QPoint &pos) const;
 
 private:
     const int BLOCK_SIZE;                        //한 번에 보낼 바이트의 크기를 1024로 고정

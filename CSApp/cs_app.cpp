@@ -146,24 +146,24 @@ CS_App::~CS_App()                                                   //소멸자
     ChattingForm = nullptr;
 }
 
-void CS_App::on_actiontr_ClientHandlerForm_triggered()              //고객 정보 폼 액션을 선택했을 경우
+void CS_App::on_actiontr_ClientHandlerForm_triggered() const             //고객 정보 폼 액션을 선택했을 경우
 {
     CForm->setFocus();                                              //고객 정보 폼으로 화면 전환
 }
 
 
-void CS_App::on_actiontr_ProductHandlerForm_triggered()             //제품 정보 폼 액션을 선택했을 경우
+void CS_App::on_actiontr_ProductHandlerForm_triggered() const             //제품 정보 폼 액션을 선택했을 경우
 {
     PForm->setFocus();                                              //제품 정보 폼으로 화면 전환
 }
 
 
-void CS_App::on_actiontr_OrderHandlerForm_triggered()               //주문 정보 폼 액션을 선택했을 경우
+void CS_App::on_actiontr_OrderHandlerForm_triggered() const               //주문 정보 폼 액션을 선택했을 경우
 {
     OForm->setFocus();                                              //주문 정보 폼으로 화면 전환
 }
 
-void CS_App::on_actiontr_ChatServerForm_triggered()                 //채팅 서버 폼 액션을 선택했을 경우
+void CS_App::on_actiontr_ChatServerForm_triggered() const                 //채팅 서버 폼 액션을 선택했을 경우
 {
     ChattingForm->setFocus();                                       //채팅 서버 폼으로 화면 전환
 }

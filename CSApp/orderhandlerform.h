@@ -48,7 +48,7 @@ signals:
 
 private:
     Ui::OrderHandlerForm *Oui;                                      //UI
-    int makeOid();                                                  //주문 ID를 생성하는 함수
+    int makeOid() const;                                                  //주문 ID를 생성하는 함수
     int cnt;                                                    //detailModel의 입력행 정보
     QSqlTableModel *tableModel;                                     //주문 정보를 나타낼 테이블 모델
     QStandardItemModel *detailModel;                                //주문 상세 정보를 나타낼 스탠다드 아이템 모델
@@ -59,7 +59,7 @@ private slots:
     void on_enrollPushButton_clicked();                             //등록 버튼을 눌렀을 때
 
     /*주문 정보를 추가할 때, 고객 정보 클래스에서 돌아온 시그널을 받는 슬롯함수*/
-    void addReturnClient(std::vector<QString>);
+    void addReturnClient(std::vector<QString>) const;
 
     /*주문 정보를 추가할 때, 제품 정보 클래스에서 돌아온 시그널을 받는 슬롯함수*/
     void addReturnProduct(std::vector<QString>);
@@ -67,25 +67,25 @@ private slots:
     void on_searchPushButton_clicked();                             //검색 버튼을 눌렀을 때
 
     /*주문 정보를 검색할 때, 고객 정보 클래스에서 돌아온 시그널을 받는 슬롯함수*/
-    void searchReturnClient(std::vector<QString>);
+    void searchReturnClient(std::vector<QString>) const;
 
     /*주문 정보를 검색할 때, 제품 정보 클래스에서 돌아온 시그널을 받는 슬롯함수*/
-    void searchReturnProduct(std::vector<QString>);
+    void searchReturnProduct(std::vector<QString>) const;
 
-    void on_resetPushButton_clicked();                              //초기화 버튼을 눌렀을 때
+    void on_resetPushButton_clicked() const;                              //초기화 버튼을 눌렀을 때
 
     void on_removePushButton_clicked();                             //삭제 버튼을 눌렀을 때
 
     void on_modifyPushButton_clicked();                             //수정 버튼을 눌렀을 때
 
     /*주문 정보를 수정할 때, 고객 정보 클래스에서 돌아온 시그널을 받는 슬롯함수*/
-    void modifyReturnClient(std::vector<QString>, int);
+    void modifyReturnClient(std::vector<QString>, int) const;
 
     /*주문 정보를 수정할 때, 제품 정보 클래스에서 돌아온 시그널을 받는 슬롯함수*/
-    void modifyReturnProduct(std::vector<QString>, int);
+    void modifyReturnProduct(std::vector<QString>, int) const;
 
     /*수정 시 선택된 데이터를 LineEdit 위젯에 미리 채우기 위한 슬롯함수*/
-    void on_tableView5_clicked(const QModelIndex &index);
+    void on_tableView5_clicked(const QModelIndex &index) const;
 
     /*고객 정보가 추가됐다는 시그널을 받는 슬롯함수*/
     void clientAdded();

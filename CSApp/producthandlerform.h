@@ -40,20 +40,20 @@ signals:
 
 private:
     Ui::ProductHandlerForm *Pui;                                //UI
-    int makePid();                                              //제품 ID를 생성하는 함수
+    int makePid() const;                                              //제품 ID를 생성하는 함수
     QSqlTableModel *tableModel;                                 //제품 정보를 나타낼 테이블 모델
     QSqlTableModel *searchModel;                                //검색 결과를 나타날 테이블 모델
     QSqlQuery *query;                                           //쿼리문을 사용하기 위한 쿼리
 
 private slots:
     void on_enrollPushButton_clicked();                         //등록 버튼
-    void on_searchPushButton_clicked();                         //검색 버튼
-    void on_resetPushButton_clicked();                          //초기화 버튼
+    void on_searchPushButton_clicked() const;                         //검색 버튼
+    void on_resetPushButton_clicked() const;                          //초기화 버튼
     void on_removePushButton_clicked();                         //삭제 버튼
     void on_modifyPushButton_clicked();                         //수정 버튼
 
     /*현재 제품 정보를 입력란에 채워주는 슬롯함수*/
-    void on_tableView5_clicked(const QModelIndex &index);
+    void on_tableView5_clicked(const QModelIndex &index) const;
 
     /*주문 정보가 추가될 때 필요한 제품 정보를//전달하기 위한 슬롯함수*/
     void orderAddedProduct(int);
@@ -65,7 +65,7 @@ private slots:
     void orderModifiedProduct(int, int);
 
     /*주문 정보에 들어간 제품 정보 콤보박스의 데이터를 채우기 위한 슬롯 함수*/
-    void setProductComboBox(QComboBox*, QComboBox*);
+    void setProductComboBox(QComboBox*, QComboBox*) const;
 };
 
 #endif // PRODUCTHANDLERFORM_H

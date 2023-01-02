@@ -198,7 +198,7 @@ void OrderHandlerForm::dataload()
 #endif
 }
 
-int OrderHandlerForm::makeOid()                                     //주문 ID를 생성하는 함수
+int OrderHandlerForm::makeOid() const                                     //주문 ID를 생성하는 함수
 {
     if(0 == tableModel->rowCount())    return 100001;               //첫 번째 주문 ID: 100001
     return 10;                                                      //두 번째 이후는 아무 숫자
@@ -356,7 +356,7 @@ void OrderHandlerForm::on_enrollPushButton_clicked()                //등록 버
 }
 
 /*등록 탭에서 보낸 시그널로 넘어온 고객 정보로 detailModel을 채우는 슬롯함수*/
-void OrderHandlerForm::addReturnClient(std::vector<QString> cinfoVec)
+void OrderHandlerForm::addReturnClient(std::vector<QString> cinfoVec) const
 {
     /*주문 정보가 표시될 4개의 테이블 뷰 모음*/
     std::vector<QTableView*> viewVec;
@@ -521,7 +521,7 @@ void OrderHandlerForm::on_searchPushButton_clicked()                //검색 버
 }
 
 /*검색 탭에서 보낸 시그널로 넘어온 고객 정보로 detailModel을 채우는 슬롯함수*/
-void OrderHandlerForm::searchReturnClient(std::vector<QString> cinfoVec)
+void OrderHandlerForm::searchReturnClient(std::vector<QString> cinfoVec) const
 {
     /*넘어온 고객 정보를 각 변수로 저장*/
     QString name = cinfoVec[0];
@@ -554,7 +554,7 @@ void OrderHandlerForm::searchReturnClient(std::vector<QString> cinfoVec)
 }
 
 /*검색 탭에서 보낸 시그널로 넘어온 제품 정보로 detailModel을 채우는 슬롯함수*/
-void OrderHandlerForm::searchReturnProduct(std::vector<QString> pinfoVec)
+void OrderHandlerForm::searchReturnProduct(std::vector<QString> pinfoVec) const
 {
     /*넘어온 제품 정보를 각 변수로 저장*/
     QString sort = pinfoVec[0];
@@ -598,7 +598,7 @@ void OrderHandlerForm::searchReturnProduct(std::vector<QString> pinfoVec)
     tableModel->setFilter("o_id LIKE'1%'");
 }
 
-void OrderHandlerForm::on_resetPushButton_clicked()                 //초기화 버튼을 눌렀을 때
+void OrderHandlerForm::on_resetPushButton_clicked() const                 //초기화 버튼을 눌렀을 때
 {
     searchModel->removeRows(0,searchModel->rowCount());             //검색 결과 초기화
 }
@@ -727,7 +727,7 @@ void OrderHandlerForm::on_modifyPushButton_clicked()                //수정 버
 }
 
 /*수정 탭에서 보낸 시그널로 넘어온 고객 정보로 detailModel을 채우는 슬롯함수*/
-void OrderHandlerForm::modifyReturnClient(std::vector<QString> cinfoVec, int row)
+void OrderHandlerForm::modifyReturnClient(std::vector<QString> cinfoVec, int row) const
 {
     /*넘어온 고객 정보를 각 변수로 저장*/
     QString name = cinfoVec[0];
@@ -760,7 +760,7 @@ void OrderHandlerForm::modifyReturnClient(std::vector<QString> cinfoVec, int row
 }
 
 /*수정 탭에서 보낸 시그널로 넘어온 제품 정보로 detailModel을 채우는 슬롯함수*/
-void OrderHandlerForm::modifyReturnProduct(std::vector<QString> pinfoVec, int row)
+void OrderHandlerForm::modifyReturnProduct(std::vector<QString> pinfoVec, int row) const
 {
     /*넘어온 제품 정보를 각 변수로 저장*/
     QString sort = pinfoVec[0];
@@ -801,7 +801,7 @@ void OrderHandlerForm::modifyReturnProduct(std::vector<QString> pinfoVec, int ro
 }
 
 /*현재 주문 정보를 입력란에 채워주는 슬롯함수*/
-void OrderHandlerForm::on_tableView5_clicked(const QModelIndex &index)
+void OrderHandlerForm::on_tableView5_clicked(const QModelIndex &index) const
 {
     std::vector<QLineEdit*> lineEditVec;                                   //현재 주문 정보를 대입할 LineEdit 위젯 저장
     lineEditVec.push_back(Oui->orderIDLineEdit);

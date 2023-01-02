@@ -257,7 +257,7 @@ void ChatServerForm::removeClientInfo(QString name)                             
     }
 }
 
-void ChatServerForm::clientConnect()                                         //서버와 클라이언트 소켓을 연결하는 함수
+void ChatServerForm::clientConnect() const                                         //서버와 클라이언트 소켓을 연결하는 함수
 {
     QTcpSocket *clientConnection = chatServer->nextPendingConnection();      //연결된 클라이언트 소켓과 채팅 서버를 연결
 
@@ -572,7 +572,7 @@ void ChatServerForm::inviteClient()                                          //�
 }
 
 /* 파일 전송 */
-void ChatServerForm::acceptConnection()                                      //파일 서버의 소켓을 연결하는 함수
+void ChatServerForm::acceptConnection() const                                      //파일 서버의 소켓을 연결하는 함수
 {
     qDebug() << tr("Connected, preparing to receive files!");                //디버그 메세지 출력
 
@@ -654,7 +654,7 @@ void ChatServerForm::readClient()                                            //�
 }
 
 /*대기실에서 컨텍스트 메뉴를 호출할 때*/
-void ChatServerForm::on_waittingRoomTreeWidget_customContextMenuRequested(const QPoint &pos)
+void ChatServerForm::on_waittingRoomTreeWidget_customContextMenuRequested(const QPoint &pos) const
 {
     if(ui->waittingRoomTreeWidget->currentItem() == nullptr)    return;      //현재 아이템이 선택되지 않은 경우 예외처리
     QString name = ui->waittingRoomTreeWidget->                              //현재 아이템의 이름 저장
@@ -672,7 +672,7 @@ void ChatServerForm::on_waittingRoomTreeWidget_customContextMenuRequested(const 
 }
 
 /*채팅방에서 컨텍스트 메뉴를 호출할 때*/
-void ChatServerForm::on_chattingRoomTreeWidget_customContextMenuRequested(const QPoint &pos)
+void ChatServerForm::on_chattingRoomTreeWidget_customContextMenuRequested(const QPoint &pos) const
 {
     if(ui->chattingRoomTreeWidget->currentItem() == nullptr)    return;      //현재 아이템이 선택되지 않은 경우 예외처리
 

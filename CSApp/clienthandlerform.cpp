@@ -121,7 +121,7 @@ void ClientHandlerForm::dataLoad()
     emit clientLoad(cIdVec, cNameVec);                        //서버 클래스의 고객 목록 입력에 필요한 시그널 방출
 }
 
-int ClientHandlerForm::makeCid()                                //고객 ID를 생성하는 함수
+int ClientHandlerForm::makeCid() const                               //고객 ID를 생성하는 함수
 {
     if(0 == tableModel->rowCount())    return 5001;             //첫 번째 고객 ID: 5001
     else return 10;                                             //두 번째 이후는 아무 숫자
@@ -233,7 +233,7 @@ void ClientHandlerForm::on_enrollPushButton_clicked()           //등록 버튼�
 #endif
 }
 
-void ClientHandlerForm::on_searchPushButton_clicked()           //검색 버튼을 눌렀을 때
+void ClientHandlerForm::on_searchPushButton_clicked() const          //검색 버튼을 눌렀을 때
 {
     int cid = Cui->searchLineEdit->text().toInt();              //입력된 고객 ID 저장
 
@@ -250,7 +250,7 @@ void ClientHandlerForm::on_searchPushButton_clicked()           //검색 버튼�
     Cui->searchLineEdit->clear();                               //입력란 초기화
 }
 
-void ClientHandlerForm::on_resetPushButton_clicked()            //검색 초기화 버튼을 눌렀을 때
+void ClientHandlerForm::on_resetPushButton_clicked() const           //검색 초기화 버튼을 눌렀을 때
 {
     searchModel->setFilter("c_id = ''");                        //client 테이블에 필터 설정
     searchModel->select();                                      //테이블 뷰의 정보 최신화
@@ -361,7 +361,7 @@ void ClientHandlerForm::on_modifyPushButton_clicked()           //수정 버튼�
 }
 
 /*현재 고객 정보를 입력란에 채워주는 슬롯함수*/
-void ClientHandlerForm::on_tableView5_clicked(const QModelIndex &index)
+void ClientHandlerForm::on_tableView5_clicked(const QModelIndex &index) const
 {
     int row = index.row();                                      //현재 선택된 행을 저장
 
@@ -481,7 +481,7 @@ void ClientHandlerForm::orderModifiedClient(int cid, int row)
 }
 
 /*주문 정보 클래스의 고객 정보 관련 콤보박스 채우기*/
-void ClientHandlerForm::setClientComboBox(QComboBox* CidBox, QComboBox* CinfoBox)
+void ClientHandlerForm::setClientComboBox(QComboBox* CidBox, QComboBox* CinfoBox) const
 {
     /*콤보박스를 채우기 위해 필요한 고객 정보를 나타내는 변수 선언*/
     int id;
