@@ -28,6 +28,7 @@ void LogThread::appendData(QTreeWidgetItem* item)                       //저장
 
 void LogThread::saveData()                                              //로그를 파일로 출력하는 함수
 {
+#if 0
     if(itemVec.size() > 0)                                            //저장할 로그가 있으면
     {
         QFile file(filename);                                           //파일 생성
@@ -46,4 +47,24 @@ void LogThread::saveData()                                              //로그
         }
         file.close();                                                   //파일 출력 종료
     }
+#else
+    if(!(itemVec.empty()))                                            //저장할 로그가 있으면
+    {
+        QFile file(filename);                                           //파일 생성
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text))         //파일 열기 예외처리
+            return;
+
+        QTextStream out(&file);
+        foreach(auto item, itemVec)                                    //저장된 아이템의 수만큼 반복
+        {                                                               //", "를 기준으로 분리
+            out << item->text(0) << ", ";
+            out << item->text(1) << ", ";
+            out << item->text(2) << ", ";
+            out << item->text(3) << ", ";
+            out << item->text(4) << ", ";
+            out << item->text(5) << "\n";
+        }
+        file.close();                                                   //파일 출력 종료
+    }
+#endif
 }

@@ -76,7 +76,7 @@ ClientHandlerForm::ClientHandlerForm(QWidget *parent) :         //생성자
     for(int i = 0; i < view.size(); i++)                        //테이블 뷰의 입력 정보에 따른 열 너비 조절
         view[i]->resizeColumnsToContents();
 #else
-    for(const auto i : viewVec){
+    for(const auto &i : viewVec){
         i->setModel(tableModel);
         i->resizeColumnsToContents();
     }
@@ -144,12 +144,21 @@ void ClientHandlerForm::on_enrollPushButton_clicked()           //등록 버튼�
     lineEditVec.push_back(Cui->addressLineEdit1);
     lineEditVec.push_back(Cui->emailLineEdit1);
 
+#if 0
     /*입력된 데이터가 하나라도 없을 경우 등록하지 않음*/
     for(int i = 0; i < lineEditVec.size(); i++)
     {
         if(lineEditVec[i]->text() == "")
             return;
     }
+#else
+    for(const auto &i : lineEditVec){
+        if(i->text().isEmpty()){
+            return;
+        }
+    }
+
+#endif
 
     std::vector<int> cIdVec;                                         //서버 클래스에 보낼 고객 ID를 담을 배열
 
@@ -209,11 +218,19 @@ void ClientHandlerForm::on_enrollPushButton_clicked()           //등록 버튼�
     cNameVec.push_back(lineEditVec[0]->text());                           //고객 성명을 저장
 
     emit sendServer(cIdVec, cNameVec);                        //서버 클래스에 저장할 고객 정보 시그널 방출
-
+#if 0
     for(int i = 0; i < viewVec.size(); i++)                        //테이블 뷰의 입력 정보에 따른 열 너비 조절
         viewVec[i]->resizeColumnsToContents();
-
     for (int i = 0 ; i < 5; i++)    lineEditVec[i]->clear();       //입력란 초기화
+#else
+    for(const auto &i : viewVec){
+        i->resizeColumnsToContents();
+    }
+
+    for(const auto &i : lineEditVec){
+        i->clear();
+    }
+#endif
 }
 
 void ClientHandlerForm::on_searchPushButton_clicked()           //검색 버튼을 눌렀을 때
@@ -280,12 +297,20 @@ void ClientHandlerForm::on_modifyPushButton_clicked()           //수정 버튼�
     lineEditVec.push_back(Cui->addressLineEdit2);
     lineEditVec.push_back(Cui->emailLineEdit2);
 
+#if 0
     /*입력란에 입력된 정보가 하나라도 없으면 정보 수정을 하지 않음*/
     for(int i = 0; i < lineEditVec.size(); i++)
     {
         if(lineEditVec[i]->text() == "")
             return;
     }
+#else
+    for(const auto &i : lineEditVec){
+        if(i->text().isEmpty()){
+            return;
+        }
+    }
+#endif
 
     /*입력란에 입력된 정보를 각 변수에 저장*/
     int cid = lineEditVec[0]->text().toInt();
@@ -318,10 +343,21 @@ void ClientHandlerForm::on_modifyPushButton_clicked()           //수정 버튼�
     emit clientModified(cid, cinfoVec);                            //주문 정보 클래스에 고객 정보가 수정됐다는 시그널 방출
     emit sendServerCModified(cid, name);                        //서버 클래스에 고객 정보가 수정됐다는 시그널 방출
 
+#if 0
     for(int i = 0; i < viewVec.size(); i++)                        //테이블 뷰의 입력 정보에 따른 열 너비 조절
         viewVec[i]->resizeColumnsToContents();
-
     for (int i = 0 ; i < 6; i++)    lineEditVec[i]->clear();       //입력란 초기화
+#else
+    for(const auto &i : viewVec){
+        i->resizeColumnsToContents();
+    }
+
+    for(const auto &i : lineEditVec){
+        i->clear();
+    }
+#endif
+
+
 }
 
 /*현재 고객 정보를 입력란에 채워주는 슬롯함수*/

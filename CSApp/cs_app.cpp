@@ -128,6 +128,11 @@ CS_App::CS_App(QWidget *parent):
 
 CS_App::~CS_App()                                                   //소멸자
 {
+    disconnect(CForm, nullptr, nullptr, nullptr);
+    disconnect(PForm, nullptr, nullptr, nullptr);
+    disconnect(OForm, nullptr, nullptr, nullptr);
+    disconnect(ChattingForm, nullptr, nullptr, nullptr);
+
     delete ui;                                                      //생성자에서 만든 포인터 객체 소멸
     delete CForm;
     delete PForm;

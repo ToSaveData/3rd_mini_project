@@ -113,6 +113,8 @@ ChatServerForm::~ChatServerForm()                                           //�
     logThread = nullptr;
     chatServer = nullptr;
     fileServer = nullptr;
+
+    disconnect(this);
 }
 
 void ChatServerForm::addClientInfo(std::vector<int> cIdInfoVec, std::vector<QString> cNameInfoVec) //고객 정보를 서버에 추가하는 함수

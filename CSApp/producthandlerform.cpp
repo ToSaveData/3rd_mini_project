@@ -56,12 +56,18 @@ ProductHandlerForm::ProductHandlerForm(QWidget *parent) :           //생성자
     searchModel->setHeaderData(3, Qt::Horizontal, tr("sort"));
 
     Pui->tableView3->setModel(searchModel);                     //tableView3에 searchModel을 적용
-
+#if 0
     for(int i = 0; i < 4; i++)                                  //남은 테이블 뷰에 TableModel을 적용
         viewVec[i]->setModel(tableModel);
 
     for(int i = 0; i < viewVec.size(); i++)                        //테이블 뷰의 입력 정보에 따른 열 너비 조절
         viewVec[i]->resizeColumnsToContents();
+#else
+    for(const auto &i : viewVec){
+        i->setModel(tableModel);
+        i->resizeColumnsToContents();
+    }
+#endif
 }
 
 ProductHandlerForm::~ProductHandlerForm()                           //소멸자
@@ -98,13 +104,20 @@ void ProductHandlerForm::on_enrollPushButton_clicked()              //등록 버
     lineEditVec.push_back(Pui->nameLineEdit1);
     lineEditVec.push_back(Pui->priceLineEdit1);
     lineEditVec.push_back(Pui->sortLineEdit1);
-
+#if 0
     /*입력된 데이터가 하나라도 없을 경우 등록하지 않음*/
     for(int i = 0; i < lineEditVec.size(); i++)
     {
         if(lineEditVec[i]->text() == "")
             return;
     }
+#else
+    for(const auto &i : lineEditVec){
+        if(i->text().isEmpty()){
+            return;
+        }
+    }
+#endif
 
     /*입력된 데이터 저장*/
     int pid = makePid();
@@ -144,11 +157,21 @@ void ProductHandlerForm::on_enrollPushButton_clicked()              //등록 버
         emit productAdded(id);
     }
 
+#if 0
     for(int i = 0; i < viewVec.size(); i++)                            //테이블 뷰의 입력 정보에 따른 열 너비 조절
         viewVec[i]->resizeColumnsToContents();
 
     for (int i = 0 ; i < lineEditVec.size(); i++)                      //입력란 초기화
         lineEditVec[i]->clear();
+#else
+    for(const auto &i : viewVec){
+        i->resizeColumnsToContents();
+    }
+
+    for(const auto &i : lineEditVec){
+        i->clear();
+    }
+#endif
 }
 
 void ProductHandlerForm::on_searchPushButton_clicked()              //검색 버튼을 눌렀을 때
@@ -207,12 +230,20 @@ void ProductHandlerForm::on_modifyPushButton_clicked()              //수정 버
     lineEditVec.push_back(Pui->priceLineEdit2);
     lineEditVec.push_back(Pui->sortLineEdit2);
 
+#if 0
     /*입력란에 입력된 정보가 하나라도 없으면 정보 수정을 하지 않음*/
     for(int i = 0; i < lineEditVec.size(); i++)
     {
         if(lineEditVec[i]->text() == "")
             return;
     }
+#else
+    for(const auto &i : lineEditVec){
+        if(i->text().isEmpty()){
+            return;
+        }
+    }
+#endif
 
     /*입력란에 입력된 정보를 각 변수에 저장*/
     int pid = lineEditVec[0]->text().toInt();
@@ -242,11 +273,21 @@ void ProductHandlerForm::on_modifyPushButton_clicked()              //수정 버
     /*주문 정보 클래스에 제품 정보가 수정됐다는 시그널 방출*/
     emit productModified(pid, pinfoVec);
 
+#if 0
     for(int i = 0; i < viewVec.size(); i++)                            //테이블 뷰의 입력 정보에 따른 열 너비 조절
         viewVec[i]->resizeColumnsToContents();
 
     for (int i = 0 ; i < lineEditVec.size(); i++)                      //입력란 초기화
         lineEditVec[i]->clear();
+#else
+    for(const auto &i : viewVec){
+        i->resizeColumnsToContents();
+    }
+
+    for(const auto &i : lineEditVec){
+        i->clear();
+    }
+#endif
 }
 
 /*현재 제품 정보를 입력란에 채워주는 슬롯함수*/
