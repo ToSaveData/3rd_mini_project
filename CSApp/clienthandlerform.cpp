@@ -15,9 +15,11 @@ ClientHandlerForm::ClientHandlerForm(QWidget *parent) :         //생성자
 {
     Cui->setupUi(this);                                         //현재 클래스에 UI를 세팅
 
-    QVector<QTableView*> view;                                  //모델 설정이 필요한 테이블 뷰 모음
-    view << Cui->tableView1 << Cui->tableView2
-         << Cui->tableView4 << Cui->tableView5;
+    std::vector<QTableView*> view;                                  //모델 설정이 필요한 테이블 뷰 모음
+    view.push_back(Cui->tableView1);
+    view.push_back(Cui->tableView2);
+    view.push_back(Cui->tableView4);
+    view.push_back(Cui->tableView5);
 
     QSqlDatabase db = QSqlDatabase::addDatabase                 //QSQLITE DB에 연결명을 설정하고 추가
                         ("QSQLITE", "clientConnection");
@@ -68,12 +70,18 @@ ClientHandlerForm::ClientHandlerForm(QWidget *parent) :         //생성자
                                tr("email"));
 
     Cui->tableView3->setModel(searchModel);                     //tableView3에 searchModel을 적용
-
+#if 0
     for(int i = 0; i < 4; i++)
         view[i]->setModel(tableModel);                          //남은 테이블 뷰에 TableModel을 적용
 
     for(int i = 0; i < view.size(); i++)                        //테이블 뷰의 입력 정보에 따른 열 너비 조절
         view[i]->resizeColumnsToContents();
+#else
+    for(const auto i : view){
+        i->setModel(tableModel);
+        i->resizeColumnsToContents();
+    }
+#endif
 }
 
 ClientHandlerForm::~ClientHandlerForm()                         //소멸자
@@ -123,15 +131,19 @@ int ClientHandlerForm::makeCid()                                //고객 ID를 �
 void ClientHandlerForm::on_enrollPushButton_clicked()           //등록 버튼을 눌렀을 때
 {
     /*고객 정보가 표시될 4개의 테이블 뷰 모음*/
-    QVector<QTableView*> view;
-    view << Cui->tableView1 << Cui->tableView2
-         << Cui->tableView4 << Cui->tableView5;
+    std::vector<QTableView*> view;
+    view.push_back(Cui->tableView1);
+    view.push_back(Cui->tableView2);
+    view.push_back(Cui->tableView4);
+    view.push_back(Cui->tableView5);
 
     /*고객 정보가 입력된 lineEdit 위젯 모음*/
-    QVector<QLineEdit*> lineEdit;
-    lineEdit << Cui->nameLineEdit1 << Cui->birthdayLineEdit1
-             << Cui->phoneNumLineEdit1 << Cui->addressLineEdit1
-             << Cui->emailLineEdit1;
+    std::vector<QLineEdit*> lineEdit;
+    lineEdit.push_back(Cui->nameLineEdit1);
+    lineEdit.push_back(Cui->birthdayLineEdit1);
+    lineEdit.push_back(Cui->phoneNumLineEdit1);
+    lineEdit.push_back(Cui->addressLineEdit1);
+    lineEdit.push_back(Cui->emailLineEdit1);
 
     /*입력된 데이터가 하나라도 없을 경우 등록하지 않음*/
     for(int i = 0; i < lineEdit.size(); i++)
@@ -254,15 +266,20 @@ void ClientHandlerForm::on_removePushButton_clicked()           //삭제 버튼�
 void ClientHandlerForm::on_modifyPushButton_clicked()           //수정 버튼을 눌렀을 때
 {
     /*고객 정보가 표시될 4개의 테이블 뷰 모음*/
-    QVector<QTableView*> view;
-    view << Cui->tableView1 << Cui->tableView2
-         << Cui->tableView4 << Cui->tableView5;
+    std::vector<QTableView*> view;
+    view.push_back(Cui->tableView1);
+    view.push_back(Cui->tableView2);
+    view.push_back(Cui->tableView4);
+    view.push_back(Cui->tableView5);
 
     /*수정될 정보가 입력된 LineEdit 위젯 모음*/
-    QVector<QLineEdit*> lineEdit;
-    lineEdit << Cui->idLineEdit << Cui->nameLineEdit2
-             << Cui->birthdayLineEdit2 << Cui->phoneNumLineEdit2
-             << Cui->addressLineEdit2 << Cui->emailLineEdit2;
+    std::vector<QLineEdit*> lineEdit;
+    lineEdit.push_back(Cui->idLineEdit);
+    lineEdit.push_back(Cui->nameLineEdit2);
+    lineEdit.push_back(Cui->birthdayLineEdit2);
+    lineEdit.push_back(Cui->phoneNumLineEdit2);
+    lineEdit.push_back(Cui->addressLineEdit2);
+    lineEdit.push_back(Cui->emailLineEdit2);
 
     /*입력란에 입력된 정보가 하나라도 없으면 정보 수정을 하지 않음*/
     for(int i = 0; i < lineEdit.size(); i++)
