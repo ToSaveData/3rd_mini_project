@@ -1,6 +1,5 @@
 #include "clienthandlerform.h"
 #include "ui_clienthandlerform.h"
-//#include <std::vector>
 #include <QComboBox>
 #include <QTableView>
 #include <QSqlTableModel>
@@ -15,11 +14,11 @@ ClientHandlerForm::ClientHandlerForm(QWidget *parent) :         //생성자
 {
     Cui->setupUi(this);                                         //현재 클래스에 UI를 세팅
 
-    std::vector<QTableView*> view;                                  //모델 설정이 필요한 테이블 뷰 모음
-    view.push_back(Cui->tableView1);
-    view.push_back(Cui->tableView2);
-    view.push_back(Cui->tableView4);
-    view.push_back(Cui->tableView5);
+    std::vector<QTableView*> viewVec;                                  //모델 설정이 필요한 테이블 뷰 모음
+    viewVec.push_back(Cui->tableView1);
+    viewVec.push_back(Cui->tableView2);
+    viewVec.push_back(Cui->tableView4);
+    viewVec.push_back(Cui->tableView5);
 
     QSqlDatabase db = QSqlDatabase::addDatabase                 //QSQLITE DB에 연결명을 설정하고 추가
                         ("QSQLITE", "clientConnection");
@@ -77,7 +76,7 @@ ClientHandlerForm::ClientHandlerForm(QWidget *parent) :         //생성자
     for(int i = 0; i < view.size(); i++)                        //테이블 뷰의 입력 정보에 따른 열 너비 조절
         view[i]->resizeColumnsToContents();
 #else
-    for(const auto i : view){
+    for(const auto i : viewVec){
         i->setModel(tableModel);
         i->resizeColumnsToContents();
     }
@@ -102,8 +101,8 @@ ClientHandlerForm::~ClientHandlerForm()                         //소멸자
 void ClientHandlerForm::dataLoad()
 {
     /*서버 클래스에 고객의 이름과 ID를 담아 전송할 배열*/
-    std::vector<QString> cNameList;
-    std::vector<int> cIdList;
+    std::vector<QString> cNameVec;
+    std::vector<int> cIdVec;
 
     /*고객의 이름과 ID를 저장할 변수 선언*/
     QString name;
@@ -115,11 +114,11 @@ void ClientHandlerForm::dataLoad()
         id = tableModel->record(i).value("c_id").toInt();
         name = tableModel->record(i).value("name").toString();
 
-        cIdList.push_back(id);
-        cNameList.push_back(name);
+        cIdVec.push_back(id);
+        cNameVec.push_back(name);
     }
 
-    emit clientLoad(cIdList, cNameList);                        //서버 클래스의 고객 목록 입력에 필요한 시그널 방출
+    emit clientLoad(cIdVec, cNameVec);                        //서버 클래스의 고객 목록 입력에 필요한 시그널 방출
 }
 
 int ClientHandlerForm::makeCid()                                //고객 ID를 생성하는 함수
@@ -131,36 +130,36 @@ int ClientHandlerForm::makeCid()                                //고객 ID를 �
 void ClientHandlerForm::on_enrollPushButton_clicked()           //등록 버튼을 눌렀을 때
 {
     /*고객 정보가 표시될 4개의 테이블 뷰 모음*/
-    std::vector<QTableView*> view;
-    view.push_back(Cui->tableView1);
-    view.push_back(Cui->tableView2);
-    view.push_back(Cui->tableView4);
-    view.push_back(Cui->tableView5);
+    std::vector<QTableView*> viewVec;
+    viewVec.push_back(Cui->tableView1);
+    viewVec.push_back(Cui->tableView2);
+    viewVec.push_back(Cui->tableView4);
+    viewVec.push_back(Cui->tableView5);
 
     /*고객 정보가 입력된 lineEdit 위젯 모음*/
-    std::vector<QLineEdit*> lineEdit;
-    lineEdit.push_back(Cui->nameLineEdit1);
-    lineEdit.push_back(Cui->birthdayLineEdit1);
-    lineEdit.push_back(Cui->phoneNumLineEdit1);
-    lineEdit.push_back(Cui->addressLineEdit1);
-    lineEdit.push_back(Cui->emailLineEdit1);
+    std::vector<QLineEdit*> lineEditVec;
+    lineEditVec.push_back(Cui->nameLineEdit1);
+    lineEditVec.push_back(Cui->birthdayLineEdit1);
+    lineEditVec.push_back(Cui->phoneNumLineEdit1);
+    lineEditVec.push_back(Cui->addressLineEdit1);
+    lineEditVec.push_back(Cui->emailLineEdit1);
 
     /*입력된 데이터가 하나라도 없을 경우 등록하지 않음*/
-    for(int i = 0; i < lineEdit.size(); i++)
+    for(int i = 0; i < lineEditVec.size(); i++)
     {
-        if(lineEdit[i]->text() == "")
+        if(lineEditVec[i]->text() == "")
             return;
     }
 
-    std::vector<int> cIdInfo;                                         //서버 클래스에 보낼 고객 ID를 담을 배열
+    std::vector<int> cIdVec;                                         //서버 클래스에 보낼 고객 ID를 담을 배열
 
     /*입력된 데이터 저장*/
     int cid = makeCid();
-    QString name = lineEdit[0]->text();
-    QString birthday = lineEdit[1]->text();
-    QString phoneNumber = lineEdit[2]->text();
-    QString address = lineEdit[3]->text();
-    QString email = lineEdit[4]->text();
+    QString name = lineEditVec[0]->text();
+    QString birthday = lineEditVec[1]->text();
+    QString phoneNumber = lineEditVec[2]->text();
+    QString address = lineEditVec[3]->text();
+    QString email = lineEditVec[4]->text();
 
     if(5001 == cid)                                             //첫 번째 데이터가 입력될 경우
     {
@@ -180,7 +179,7 @@ void ClientHandlerForm::on_enrollPushButton_clicked()           //등록 버튼�
         /*주문 정보 클래스에 새 고객 정보가 추가 됐다는 시그널 방출*/
         emit clientAdded(cid);
 
-        cIdInfo.push_back(cid);                                         //서버 클래스에 보낼 고객 ID를 저장
+        cIdVec.push_back(cid);                                         //서버 클래스에 보낼 고객 ID를 저장
     }
     else                                                        //두 번째부터 데이터가 입력될 경우
     {
@@ -203,18 +202,18 @@ void ClientHandlerForm::on_enrollPushButton_clicked()           //등록 버튼�
         /*주문 정보 클래스에 새 고객 정보가 추가 됐다는 시그널 방출*/
         emit clientAdded(id);
 
-        cIdInfo.push_back(id);                                          //서버 클래스에 보낼 고객 ID를 저장
+        cIdVec.push_back(id);                                          //서버 클래스에 보낼 고객 ID를 저장
     }
 
-    std::vector<QString> cNameInfo;                                   //서버 클래스에 보낼 고객 성명을 담을 배열
-    cNameInfo.push_back(lineEdit[0]->text());                           //고객 성명을 저장
+    std::vector<QString> cNameVec;                                   //서버 클래스에 보낼 고객 성명을 담을 배열
+    cNameVec.push_back(lineEditVec[0]->text());                           //고객 성명을 저장
 
-    emit sendServer(cIdInfo, cNameInfo);                        //서버 클래스에 저장할 고객 정보 시그널 방출
+    emit sendServer(cIdVec, cNameVec);                        //서버 클래스에 저장할 고객 정보 시그널 방출
 
-    for(int i = 0; i < view.size(); i++)                        //테이블 뷰의 입력 정보에 따른 열 너비 조절
-        view[i]->resizeColumnsToContents();
+    for(int i = 0; i < viewVec.size(); i++)                        //테이블 뷰의 입력 정보에 따른 열 너비 조절
+        viewVec[i]->resizeColumnsToContents();
 
-    for (int i = 0 ; i < 5; i++)    lineEdit[i]->clear();       //입력란 초기화
+    for (int i = 0 ; i < 5; i++)    lineEditVec[i]->clear();       //입력란 초기화
 }
 
 void ClientHandlerForm::on_searchPushButton_clicked()           //검색 버튼을 눌렀을 때
@@ -266,35 +265,35 @@ void ClientHandlerForm::on_removePushButton_clicked()           //삭제 버튼�
 void ClientHandlerForm::on_modifyPushButton_clicked()           //수정 버튼을 눌렀을 때
 {
     /*고객 정보가 표시될 4개의 테이블 뷰 모음*/
-    std::vector<QTableView*> view;
-    view.push_back(Cui->tableView1);
-    view.push_back(Cui->tableView2);
-    view.push_back(Cui->tableView4);
-    view.push_back(Cui->tableView5);
+    std::vector<QTableView*> viewVec;
+    viewVec.push_back(Cui->tableView1);
+    viewVec.push_back(Cui->tableView2);
+    viewVec.push_back(Cui->tableView4);
+    viewVec.push_back(Cui->tableView5);
 
     /*수정될 정보가 입력된 LineEdit 위젯 모음*/
-    std::vector<QLineEdit*> lineEdit;
-    lineEdit.push_back(Cui->idLineEdit);
-    lineEdit.push_back(Cui->nameLineEdit2);
-    lineEdit.push_back(Cui->birthdayLineEdit2);
-    lineEdit.push_back(Cui->phoneNumLineEdit2);
-    lineEdit.push_back(Cui->addressLineEdit2);
-    lineEdit.push_back(Cui->emailLineEdit2);
+    std::vector<QLineEdit*> lineEditVec;
+    lineEditVec.push_back(Cui->idLineEdit);
+    lineEditVec.push_back(Cui->nameLineEdit2);
+    lineEditVec.push_back(Cui->birthdayLineEdit2);
+    lineEditVec.push_back(Cui->phoneNumLineEdit2);
+    lineEditVec.push_back(Cui->addressLineEdit2);
+    lineEditVec.push_back(Cui->emailLineEdit2);
 
     /*입력란에 입력된 정보가 하나라도 없으면 정보 수정을 하지 않음*/
-    for(int i = 0; i < lineEdit.size(); i++)
+    for(int i = 0; i < lineEditVec.size(); i++)
     {
-        if(lineEdit[i]->text() == "")
+        if(lineEditVec[i]->text() == "")
             return;
     }
 
     /*입력란에 입력된 정보를 각 변수에 저장*/
-    int cid = lineEdit[0]->text().toInt();
-    QString name = lineEdit[1]->text();
-    QString birthday = lineEdit[2]->text();
-    QString phoneNumber = lineEdit[3]->text();
-    QString address = lineEdit[4]->text();
-    QString email = lineEdit[5]->text();
+    int cid = lineEditVec[0]->text().toInt();
+    QString name = lineEditVec[1]->text();
+    QString birthday = lineEditVec[2]->text();
+    QString phoneNumber = lineEditVec[3]->text();
+    QString address = lineEditVec[4]->text();
+    QString email = lineEditVec[5]->text();
 
     /*client 테이블의 정보를 수정하는 쿼리문*/
     query->prepare("UPDATE client SET "
@@ -311,18 +310,18 @@ void ClientHandlerForm::on_modifyPushButton_clicked()           //수정 버튼�
 
     tableModel->select();                                       //테이블 뷰의 정보 최신화
 
-    std::vector<QString> cinfo;                                       //주문 정보 클래스에 보낼 고객 정보 배열
-    cinfo.push_back(name);
-    cinfo.push_back(phoneNumber);
-    cinfo.push_back(address);                                   //고객 정보를 담음
+    std::vector<QString> cinfoVec;                                       //주문 정보 클래스에 보낼 고객 정보 배열
+    cinfoVec.push_back(name);
+    cinfoVec.push_back(phoneNumber);
+    cinfoVec.push_back(address);                                   //고객 정보를 담음
 
-    emit clientModified(cid, cinfo);                            //주문 정보 클래스에 고객 정보가 수정됐다는 시그널 방출
+    emit clientModified(cid, cinfoVec);                            //주문 정보 클래스에 고객 정보가 수정됐다는 시그널 방출
     emit sendServerCModified(cid, name);                        //서버 클래스에 고객 정보가 수정됐다는 시그널 방출
 
-    for(int i = 0; i < view.size(); i++)                        //테이블 뷰의 입력 정보에 따른 열 너비 조절
-        view[i]->resizeColumnsToContents();
+    for(int i = 0; i < viewVec.size(); i++)                        //테이블 뷰의 입력 정보에 따른 열 너비 조절
+        viewVec[i]->resizeColumnsToContents();
 
-    for (int i = 0 ; i < 6; i++)    lineEdit[i]->clear();       //입력란 초기화
+    for (int i = 0 ; i < 6; i++)    lineEditVec[i]->clear();       //입력란 초기화
 }
 
 /*현재 고객 정보를 입력란에 채워주는 슬롯함수*/
@@ -356,7 +355,7 @@ void ClientHandlerForm::on_tableView5_clicked(const QModelIndex &index)
 /*새로운 주문 정보를 등록할 경우 고객 정보를 담아서 보내주는 슬롯함수*/
 void ClientHandlerForm::orderAddedClient(int cid)
 {
-    std::vector<QString> cinfo;                                       //고객 정보를 담을 배열
+    std::vector<QString> cinfoVec;                                       //고객 정보를 담을 배열
 
     /*주문 정보 클래스에 보내줄 고객 정보만 가져오는 쿼리문*/
     query->prepare("SELECT name, phone_number, address "
@@ -377,16 +376,16 @@ void ClientHandlerForm::orderAddedClient(int cid)
     QString phoneNum = query->value(phoneNumColIdx).toString();
     QString address = query->value(addressColIdx).toString();
 
-    cinfo.push_back(name);
-    cinfo.push_back(phoneNum);
-    cinfo.push_back(address);
-    emit addReturn(cinfo);                                      //담은 고객 정보를 시그널로 방출
+    cinfoVec.push_back(name);
+    cinfoVec.push_back(phoneNum);
+    cinfoVec.push_back(address);
+    emit addReturn(cinfoVec);                                      //담은 고객 정보를 시그널로 방출
 }
 
 /*주문 정보 클래스에서 검색할 경우 필요한 고객 정보를 담아서 보내주는 슬롯함수*/
 void ClientHandlerForm::orderSearchedClient(int cid)
 {
-    std::vector<QString> cinfo;                                       //고객 정보를 담을 배열
+    std::vector<QString> cinfoVec;                                       //고객 정보를 담을 배열
 
     /*주문 정보 클래스에 보내줄 고객 정보만 가져오는 쿼리문*/
     query->prepare("SELECT name, phone_number, address "
@@ -407,17 +406,17 @@ void ClientHandlerForm::orderSearchedClient(int cid)
     QString phoneNum = query->value(phoneNumColIdx).toString();
     QString address = query->value(addressColIdx).toString();
 
-    cinfo.push_back(name);
-    cinfo.push_back(phoneNum);
-    cinfo.push_back(address);
+    cinfoVec.push_back(name);
+    cinfoVec.push_back(phoneNum);
+    cinfoVec.push_back(address);
 
-    emit searchReturn(cinfo);                                   //담은 고객 정보를 시그널로 방출
+    emit searchReturn(cinfoVec);                                   //담은 고객 정보를 시그널로 방출
 }
 
 /*주문 정보 클래스에서 주문 정보를 수정할 경우 필요한 고객 정보를 담아서 보내주는 슬롯함수*/
 void ClientHandlerForm::orderModifiedClient(int cid, int row)
 {
-    std::vector<QString> cinfo;                                       //고객 정보를 담을 배열
+    std::vector<QString> cinfoVec;                                       //고객 정보를 담을 배열
 
     /*주문 정보 클래스에 보내줄 고객 정보만 가져오는 쿼리문*/
     query->prepare("SELECT name, phone_number, address "
@@ -438,11 +437,11 @@ void ClientHandlerForm::orderModifiedClient(int cid, int row)
     QString phoneNum = query->value(phoneNumColIdx).toString();
     QString address = query->value(addressColIdx).toString();
 
-    cinfo.push_back(name);
-    cinfo.push_back(phoneNum);
-    cinfo.push_back(address);
+    cinfoVec.push_back(name);
+    cinfoVec.push_back(phoneNum);
+    cinfoVec.push_back(address);
 
-    emit modifyReturn(cinfo, row);                              //담은 고객 정보를 시그널로 방출
+    emit modifyReturn(cinfoVec, row);                              //담은 고객 정보를 시그널로 방출
 }
 
 /*주문 정보 클래스의 고객 정보 관련 콤보박스 채우기*/

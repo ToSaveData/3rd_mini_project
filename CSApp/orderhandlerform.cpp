@@ -155,16 +155,16 @@ void OrderHandlerForm::dataload()
         int pid = tableModel->record(i).value("p_id").toInt();
 
         /*detailMoedl에 들어갈 데이터들*/
-        std::vector<QString> str;
-        str.push_back(QString::number(oid));
-        str.push_back(date);
-        str.push_back(QString::number(quantity));
+        std::vector<QString> strVec;
+        strVec.push_back(QString::number(oid));
+        strVec.push_back(date);
+        strVec.push_back(QString::number(quantity));
 
         /*QStandardItem*로 자료형 변환*/
         std::vector<QStandardItem*> itemsVec;
-        for(int i = 0; i < str.size(); i++)
+        for(int i = 0; i < strVec.size(); i++)
         {
-            itemsVec.push_back(new QStandardItem(str[i]));
+            itemsVec.push_back(new QStandardItem(strVec[i]));
         }
 
         /*detailMoedl에 데이터 추가*/
@@ -238,16 +238,16 @@ void OrderHandlerForm::on_enrollPushButton_clicked()                //등록 버
         tableModel->select();                                       //테이블 뷰의 정보 최신화
 
         /*detailMoedl에 들어갈 데이터들*/
-        std::vector<QString> str;
-        str.push_back(QString::number(oid));
-        str.push_back(date);
-        str.push_back(QString::number(quantity));
+        std::vector<QString> strVec;
+        strVec.push_back(QString::number(oid));
+        strVec.push_back(date);
+        strVec.push_back(QString::number(quantity));
 
         /*QStandardItem*로 자료형 변환*/
         std::vector<QStandardItem*> itemsVec;
-        for(int i = 0; i < str.size(); i++)
+        for(int i = 0; i < strVec.size(); i++)
         {
-            itemsVec.push_back(new QStandardItem(str[i]));
+            itemsVec.push_back(new QStandardItem(strVec[i]));
         }
 
         /*detailMoedl에 데이터 추가*/
@@ -273,16 +273,16 @@ void OrderHandlerForm::on_enrollPushButton_clicked()                //등록 버
         tableModel->select();                                       //테이블 뷰의 정보 최신화
 
         /*detailMoedl에 들어갈 데이터들*/
-        std::vector<QString> str;
-        str.push_back(QString::number(id));
-        str.push_back(date);
-        str.push_back(QString::number(quantity));
+        std::vector<QString> strVec;
+        strVec.push_back(QString::number(id));
+        strVec.push_back(date);
+        strVec.push_back(QString::number(quantity));
 
         /*QStandardItem*로 자료형 변환*/
         std::vector<QStandardItem*> itemsVec;
-        for(int i = 0; i < str.size(); i++)
+        for(int i = 0; i < strVec.size(); i++)
         {
-            itemsVec.push_back(new QStandardItem(str[i]));
+            itemsVec.push_back(new QStandardItem(strVec[i]));
         }
 
         /*detailMoedl에 데이터 추가*/
@@ -323,16 +323,16 @@ void OrderHandlerForm::addReturnClient(std::vector<QString> cinfoVec)
     QString address = cinfoVec[2];
 
     /*detailMoedl에 들어갈 데이터들*/
-    std::vector<QString> str;
-    str.push_back(name);
-    str.push_back(phoneNum);
-    str.push_back(address);
+    std::vector<QString> strVec;
+    strVec.push_back(name);
+    strVec.push_back(phoneNum);
+    strVec.push_back(address);
 
     /*QStandardItem*로 자료형 변환*/
     std::vector<QStandardItem*> itemsVec;
-    for(int i = 0; i < str.size(); i++)
+    for(int i = 0; i < strVec.size(); i++)
     {
-        itemsVec.push_back(new QStandardItem(str[i]));
+        itemsVec.push_back(new QStandardItem(strVec[i]));
     }
 
     /*detailMoedl에 데이터 추가*/
@@ -365,18 +365,18 @@ void OrderHandlerForm::addReturnProduct(std::vector<QString> pinfoVec)
     int totalPrice = price * quantity;
 
     /*detailMoedl에 들어갈 데이터들*/
-    std::vector<QString> str;
-    str.push_back(sort);
-    str.push_back(name);
-    str.push_back(QString::number(price));
-    str.push_back(QString::number(quantity));
-    str.push_back(QString::number(totalPrice));
+    std::vector<QString> strVec;
+    strVec.push_back(sort);
+    strVec.push_back(name);
+    strVec.push_back(QString::number(price));
+    strVec.push_back(QString::number(quantity));
+    strVec.push_back(QString::number(totalPrice));
 
     /*QStandardItem*로 자료형 변환*/
     std::vector<QStandardItem*> itemsVec;
-    for(int i = 0; i < str.size(); i++)
+    for(int i = 0; i < strVec.size(); i++)
     {
-        itemsVec.push_back(new QStandardItem(str[i]));
+        itemsVec.push_back(new QStandardItem(strVec[i]));
     }
 
     /*detailMoedl에 데이터 추가*/
@@ -417,16 +417,16 @@ void OrderHandlerForm::on_searchPushButton_clicked()                //검색 버
     int pid = tableModel->record(0).value("p_id").toInt();
 
     /*detailMoedl에 들어갈 데이터들*/
-    std::vector<QString> str;
-    str.push_back(QString::number(oid));
-    str.push_back(date);
-    str.push_back(QString::number(quantity));
+    std::vector<QString> strVec;
+    strVec.push_back(QString::number(oid));
+    strVec.push_back(date);
+    strVec.push_back(QString::number(quantity));
 
     /*QStandardItem*로 자료형 변환*/
     std::vector<QStandardItem*> itemsVec;
-    for(int i = 0; i < str.size(); i++)
+    for(int i = 0; i < strVec.size(); i++)
     {
-        itemsVec.push_back(new QStandardItem(str[i]));
+        itemsVec.push_back(new QStandardItem(strVec[i]));
     }
 
     /*detailMoedl에 데이터 추가*/
@@ -454,16 +454,16 @@ void OrderHandlerForm::searchReturnClient(std::vector<QString> cinfoVec)
     QString address = cinfoVec[2];
 
     /*detailMoedl에 들어갈 데이터들*/
-    std::vector<QString>  str;
-    str.push_back(name);
-    str.push_back(phoneNum);
-    str.push_back(address);
+    std::vector<QString>  strVec;
+    strVec.push_back(name);
+    strVec.push_back(phoneNum);
+    strVec.push_back(address);
 
     /*QStandardItem*로 자료형 변환*/
     std::vector<QStandardItem*> itemsVec;
-    for(int i = 0; i < str.size(); i++)
+    for(int i = 0; i < strVec.size(); i++)
     {
-        itemsVec.push_back(new QStandardItem(str[i]));
+        itemsVec.push_back(new QStandardItem(strVec[i]));
     }
 
     /*detailMoedl에 데이터 추가*/
@@ -484,18 +484,18 @@ void OrderHandlerForm::searchReturnProduct(std::vector<QString> pinfoVec)
     int totalPrice = price * quantity;
 
     /*detailMoedl에 들어갈 데이터들*/
-    std::vector<QString>  str;
-    str.push_back(sort);
-    str.push_back(name);
-    str.push_back(QString::number(price));
-    str.push_back(QString::number(quantity));
-    str.push_back(QString::number(totalPrice));
+    std::vector<QString>  strVec;
+    strVec.push_back(sort);
+    strVec.push_back(name);
+    strVec.push_back(QString::number(price));
+    strVec.push_back(QString::number(quantity));
+    strVec.push_back(QString::number(totalPrice));
 
     /*QStandardItem*로 자료형 변환*/
     std::vector<QStandardItem*> itemsVec;
-    for(int i = 0; i < str.size(); i++)
+    for(int i = 0; i < strVec.size(); i++)
     {
-        itemsVec.push_back(new QStandardItem(str[i]));
+        itemsVec.push_back(new QStandardItem(strVec[i]));
     }
 
     /*detailMoedl에 데이터 추가*/
@@ -592,16 +592,16 @@ void OrderHandlerForm::on_modifyPushButton_clicked()                //수정 버
     tableModel->select();                                           //테이블 뷰의 정보 최신화
 
     /*detailMoedl에 들어갈 데이터들*/
-    std::vector<QString>  str;
-    str.push_back(QString::number(oid));
-    str.push_back(date);
-    str.push_back(QString::number(quantity));
+    std::vector<QString>  strVec;
+    strVec.push_back(QString::number(oid));
+    strVec.push_back(date);
+    strVec.push_back(QString::number(quantity));
 
     /*QStandardItem*로 자료형 변환*/
     std::vector<QStandardItem*> itemsVec;
-    for(int i = 0; i < str.size(); i++)
+    for(int i = 0; i < strVec.size(); i++)
     {
-        itemsVec.push_back(new QStandardItem(str[i]));
+        itemsVec.push_back(new QStandardItem(strVec[i]));
     }
 
     /*detailMoedl에 데이터 추가*/
@@ -634,16 +634,16 @@ void OrderHandlerForm::modifyReturnClient(std::vector<QString> cinfoVec, int row
     QString address = cinfoVec[2];
 
     /*detailMoedl에 들어갈 데이터들*/
-    std::vector<QString>  str;
-    str.push_back(name);
-    str.push_back(phoneNum);
-    str.push_back(address);
+    std::vector<QString>  strVec;
+    strVec.push_back(name);
+    strVec.push_back(phoneNum);
+    strVec.push_back(address);
 
     /*QStandardItem*로 자료형 변환*/
     std::vector<QStandardItem*> itemsVec;
-    for(int i = 0; i < str.size(); i++)
+    for(int i = 0; i < strVec.size(); i++)
     {
-        itemsVec.push_back(new QStandardItem(str[i]));
+        itemsVec.push_back(new QStandardItem(strVec[i]));
     }
 
     /*detailMoedl에 데이터 추가*/
@@ -665,18 +665,18 @@ void OrderHandlerForm::modifyReturnProduct(std::vector<QString> pinfoVec, int ro
     int totalPrice = price * quantity;
 
     /*detailMoedl에 들어갈 데이터들*/
-    std::vector<QString>  str;
-    str.push_back(sort);
-    str.push_back(name);
-    str.push_back(QString::number(price));
-    str.push_back(QString::number(quantity));
-    str.push_back(QString::number(totalPrice));
+    std::vector<QString>  strVec;
+    strVec.push_back(sort);
+    strVec.push_back(name);
+    strVec.push_back(QString::number(price));
+    strVec.push_back(QString::number(quantity));
+    strVec.push_back(QString::number(totalPrice));
 
     /*QStandardItem*로 자료형 변환*/
     std::vector<QStandardItem*> itemsVec;
-    for(int i = 0; i < str.size(); i++)
+    for(int i = 0; i < strVec.size(); i++)
     {
-        itemsVec.push_back(new QStandardItem(str[i]));
+        itemsVec.push_back(new QStandardItem(strVec[i]));
     }
 
     /*detailMoedl에 데이터 추가*/
@@ -836,16 +836,16 @@ void OrderHandlerForm::clientModified(int cid, std::vector<QString> cinfoVec)
             row = k->index().row();                                 //수정될 행 저장
 
             /*detailMoedl에 들어갈 데이터들*/
-            std::vector<QString>  str;
-            str.push_back(name);
-            str.push_back(phoneNum);
-            str.push_back(address);
+            std::vector<QString>  strVec;
+            strVec.push_back(name);
+            strVec.push_back(phoneNum);
+            strVec.push_back(address);
 
             /*QStandardItem*로 자료형 변환*/
             std::vector<QStandardItem*> itemsVec;
-            for(int i = 0; i < str.size(); i++)
+            for(int i = 0; i < strVec.size(); i++)
             {
-                itemsVec.push_back(new QStandardItem(str[i]));
+                itemsVec.push_back(new QStandardItem(strVec[i]));
             }
 
             /*detailMoedl에 데이터 수정*/
@@ -888,18 +888,18 @@ void OrderHandlerForm::productModified(int pid, std::vector<QString> pinfoVec)
         int totalPrice = price * quantityVec[i];                   //해당 행의 주문 수량으로 총 가격 계산
 
         /*detailMoedl에 들어갈 데이터들*/
-        std::vector<QString>  str;
-        str.push_back(sort);
-        str.push_back(name);
-        str.push_back(QString::number(price));
-        str.push_back(QString::number(quantityVec[i]));
-        str.push_back(QString::number(totalPrice));
+        std::vector<QString>  strVec;
+        strVec.push_back(sort);
+        strVec.push_back(name);
+        strVec.push_back(QString::number(price));
+        strVec.push_back(QString::number(quantityVec[i]));
+        strVec.push_back(QString::number(totalPrice));
 
         /*QStandardItem*로 자료형 변환*/
         std::vector<QStandardItem*> itemsVec;
-        for(int i = 0; i < str.size(); i++)
+        for(int i = 0; i < strVec.size(); i++)
         {
-            itemsVec.push_back(new QStandardItem(str[i]));
+            itemsVec.push_back(new QStandardItem(strVec[i]));
         }
 
         int row;                                                    //수정될 정보가 있는 행
